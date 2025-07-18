@@ -107,7 +107,7 @@ spec:
         - name: GRAFANA_URL
           value: ${GRAFANA_URL}
         - name: INPUT_DIR
-          value: "/krkn-visualize/rendered/"
+          value: "/visualize/rendered/"
         image: ${SYNCER_IMAGE}
       volumes:
       - name: sc-grafana-config

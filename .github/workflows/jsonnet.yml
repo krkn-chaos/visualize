@@ -1,0 +1,33 @@
+name: Jsonnet CI
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - templates/**
+      - .github/**
+      - assets/**
+  pull_request:
+    branches: [ main ]
+    paths:
+      - templates/**
+      - .github/**
+      - assets/**
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v4
+
+    - name: Get dependencies
+      run: make deps
+
+    - name: Run jsonnetfmt
+      run: make format

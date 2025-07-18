@@ -1,9 +1,9 @@
-local panels = import '../../assets/performance/panels.libsonnet';
-local queries = import '../../assets/performance/queries.libsonnet';
-local variables = import '../../assets/performance/variables.libsonnet';
+local panels = import '../../assets/ocp-performance/panels.libsonnet';
+local queries = import '../../assets/ocp-performance/queries.libsonnet';
+local variables = import '../../assets/ocp-performance/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
-g.dashboard.new('Performance')
+g.dashboard.new('Openshift Performance')
 + g.dashboard.withDescription(|||
   Performance dashboard for Red Hat Openshift
 |||)
