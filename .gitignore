@@ -3,3 +3,4 @@ templates/vendor
 rendered
 tmp
 bin
+assets/vendor
