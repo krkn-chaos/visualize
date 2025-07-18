@@ -2,14 +2,6 @@
 
 set -e
 
-export PROMETHEUS_USER=internal
-export GRAFANA_ADMIN_PASSWORD=admin
-export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
-export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:latest"} # Syncer image
-export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"quay.io/cloud-bulldozer/grafana:9.4.3"} # Grafana image
-export GRAFANA_RENDERER_IMAGE=${GRAFANA_RENDERER_IMAGE:-"grafana/grafana-image-renderer:latest"} # Grafana renderer image
-
-
 function _usage {
   cat <<END
 
@@ -47,14 +39,17 @@ END
 export PROMETHEUS_USER=internal
 export GRAFANA_ADMIN_PASSWORD=admin
 export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
-export DASHBOARDS="k8s-performance.json"
 
+export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:latest"} # Syncer image
+export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"quay.io/cloud-bulldozer/grafana:9.4.3"} # Grafana image
+export GRAFANA_RENDERER_IMAGE=${GRAFANA_RENDERER_IMAGE:-"grafana/grafana-image-renderer:latest"} # Grafana renderer image
+
+namespace_file="$(dirname $(realpath ${BASH_SOURCE[0]}))/templates/krkn_visualize_ns.yaml.template"
 
 # Set defaults for command options
 k8s_cmd='kubectl'
 namespace='krkn-visualize'
 grafana_default_pass=True
-
 
 
 # Capture and act on command options
@@ -128,7 +123,7 @@ echo "Prometheus URL is: ${PROMETHEUS_URL}"
 
 function namespace() {
   # Create namespace
-  $k8s_cmd "$1" namespace "$namespace"
+  $k8s_cmd "$1" -f "$namespace_file"
 }
 
 function grafana() {
@@ -151,11 +146,11 @@ function dash_import(){
   echo -e "\033[32mImporting dashboards...\033[0m"
   for dash in ${dash_import[@]}; do
     if [[ $dash =~ ^http ]]; then
-      echo "Fetching remote dashboard $dash"
+      echo -e "Fetching remote dashboard $dash"
       dashfile="/tmp/$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)"
       curl -sS $dash -o $dashfile
     else
-      echo "Using local dashboard ${dash}"
+      echo -e "Using local dashboard ${dash}"
       dashfile=$dash
     fi
     dashboard=$(cat ${dashfile})

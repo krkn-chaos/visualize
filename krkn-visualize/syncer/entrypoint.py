@@ -30,7 +30,7 @@ class GrafanaOperations:
         self.folder_map['General'] = None
         for root, _, files in os.walk(self.input_directory):
             folder_name = os.path.basename(root)
-            print("folder_name " + str(folder_name))
+            self.logger.info("folder_name " + str(folder_name))
             json_files = [os.path.join(root, filename) for filename in files if filename.endswith(".json")]
             folder_name = "General" if (folder_name == "") else folder_name
             if folder_name in self.folder_map:
@@ -38,7 +38,7 @@ class GrafanaOperations:
             else:
                 folder_id = self.create_folder(folder_name)
             self.dashboards[folder_id].extend(json_files)
-        print("dashboards " + str(self.dashboards))
+        self.logger.info("dashboards " + str(self.dashboards))
 
     def get_all_folders(self):
         """
@@ -56,8 +56,9 @@ class GrafanaOperations:
             )
             response_json = response.json()
             self.folder_map = {each_folder['title']: each_folder['id'] for each_folder in response_json}
-            print("folder_map " + str(self.folder_map))
+            self.logger.info("folder_map " + str(self.folder_map))
         except requests.exceptions.RequestException as e:
+            self.logger.info(f"Error listing folders. Message: {e}")
             raise Exception(f"Error listing folders. Message: {e}")
 
     def create_folder(self, folder_name):
@@ -65,6 +66,7 @@ class GrafanaOperations:
         This method creates a folder in grafana
         :return:
         """
+        self.logger.info('create folder' + str(folder_name))
         uid = str(uuid.uuid4())
         headers = {
             "Content-Type": "application/json",
@@ -84,6 +86,7 @@ class GrafanaOperations:
             return response_json['id']
 
         except requests.exceptions.RequestException as e:
+            self.logger.info(f"Error creating folder with name:'{self.folder_name}' and uid:'{uid}'. Message: {e}")
             raise Exception(f"Error creating folder with name:'{self.folder_name}' and uid:'{uid}'. Message: {e}")
 
     def read_dashboard_json(self, json_file):
@@ -91,7 +94,7 @@ class GrafanaOperations:
         This method reads dashboard from json file
         :return:
         """
-        print('read json ' + str(json_file))
+        self.logger.info('read json ' + str(json_file))
         with open(json_file, 'r') as f:
             return json.load(f)
 
@@ -105,8 +108,8 @@ class GrafanaOperations:
             "Accept": "application/json",
         }
         for folder_id, files in self.dashboards.items():
-            print('folder_id ' + str(folder_id))
-            print('files ' + str(files))
+            self.logger.info('folder_id ' + str(folder_id))
+            self.logger.info('files ' + str(files))
             for json_file in set(files):
                 dashboard_json = self.read_dashboard_json(json_file)
                 if "tags" in dashboard_json.keys():
@@ -126,10 +129,12 @@ class GrafanaOperations:
                     if response.status_code == 200:
                         self.logger.info(f"Dashboard '{dashboard_json['title']}' created successfully in folder '{folder_id}'")
                     else:
+                        self.logger.info(f"Failed to create dashboard '{dashboard_json['title']}' in folder '{folder_id}'. Status code: {response.status_code}. Message: {response.text}")
                         raise Exception(
                             f"Failed to create dashboard '{dashboard_json['title']}' in folder '{folder_id}'. Status code: {response.status_code}. Message: {response.text}")
 
                 except requests.exceptions.RequestException as e:
+                    self.logger.info("Error creating dashboard '{dashboard_json['title']}' in folder '{folder_id}'. Message: {e}")
                     raise Exception(f"Error creating dashboard '{dashboard_json['title']}' in folder '{folder_id}'. Message: {e}")
 
 if __name__ == '__main__':
