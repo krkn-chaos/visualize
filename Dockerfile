@@ -10,10 +10,7 @@ RUN microdnf install -y podman python3 python3-pip && \
 
 COPY . .
 
-
-# # Set permissions
-RUN echo $PATH
-RUN  pwd
+RUN ls
 
 RUN chmod -R 775 /visualize
 
