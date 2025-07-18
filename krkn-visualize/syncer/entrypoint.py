@@ -14,12 +14,15 @@ class GrafanaOperations:
     This class is responsible for Grafana operations
     """
     def __init__(self, grafana_url: str, input_directory: str, git_commit_hash: str):
+        self.logger = logging.getLogger(__name__)
         self.grafana_url = grafana_url
+        self.logger.info('grafana url' +str(grafana_url))
         self.input_directory = input_directory
+        self.logger.info('input_directory:' +str(input_directory))
         self.git_commit_hash = git_commit_hash if git_commit_hash else ''
         self.dashboards = defaultdict(list)
         self.folder_map = dict()
-        self.logger = logging.getLogger(__name__)
+        
 
     def fetch_all_dashboards(self):
         """
@@ -29,6 +32,7 @@ class GrafanaOperations:
         self.get_all_folders()
         self.folder_map['General'] = None
         for root, _, files in os.walk(self.input_directory):
+            self.logger.info('files' +str(files))
             folder_name = os.path.basename(root)
             self.logger.info("folder_name " + str(folder_name))
             json_files = [os.path.join(root, filename) for filename in files if filename.endswith(".json")]
