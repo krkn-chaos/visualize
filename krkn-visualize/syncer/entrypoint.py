@@ -30,7 +30,7 @@ class GrafanaOperations:
         self.folder_map['General'] = None
         for root, _, files in os.walk(self.input_directory):
             folder_name = os.path.basename(root)
-            self.logger("folder_name " + str(folder_name))
+            print("folder_name " + str(folder_name))
             json_files = [os.path.join(root, filename) for filename in files if filename.endswith(".json")]
             folder_name = "General" if (folder_name == "") else folder_name
             if folder_name in self.folder_map:
@@ -38,7 +38,7 @@ class GrafanaOperations:
             else:
                 folder_id = self.create_folder(folder_name)
             self.dashboards[folder_id].extend(json_files)
-        self.logger("dashboards " + str(self.dashboards))
+        print("dashboards " + str(self.dashboards))
 
     def get_all_folders(self):
         """
@@ -91,7 +91,7 @@ class GrafanaOperations:
         This method reads dashboard from json file
         :return:
         """
-        self.logger('read json ' + str(json_file))
+        print('read json ' + str(json_file))
         with open(json_file, 'r') as f:
             return json.load(f)
 
@@ -105,8 +105,8 @@ class GrafanaOperations:
             "Accept": "application/json",
         }
         for folder_id, files in self.dashboards.items():
-            self.logger('folder_id ' + str(folder_id))
-            self.logger('files ' + str(files))
+            print('folder_id ' + str(folder_id))
+            print('files ' + str(files))
             for json_file in set(files):
                 dashboard_json = self.read_dashboard_json(json_file)
                 if "tags" in dashboard_json.keys():

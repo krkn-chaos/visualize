@@ -197,7 +197,7 @@ else
   echo -e "\033[32mDeploying Grafana...\033[0m"
   grafana "apply"
   echo "Port forward to 3000"
-  $k8s_cmd -n $namespace port-forward service/krkn-visualize 3000 &
+  #$k8s_cmd -n $namespace port-forward service/krkn-visualize 3000 &
   # Ugly, but need to slow things down when opening the port-forward
   sleep 10
 
