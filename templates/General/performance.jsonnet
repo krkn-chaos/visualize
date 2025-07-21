@@ -3,9 +3,9 @@ local queries = import '../../assets/performance/queries.libsonnet';
 local variables = import '../../assets/performance/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
-g.dashboard.new('Openshift Performance')
+g.dashboard.new('Performance')
 + g.dashboard.withDescription(|||
-  Performance dashboard for Red Hat Openshift
+  Performance dashboard for Openshift
 |||)
 + g.dashboard.time.withFrom('now-1h')
 + g.dashboard.time.withTo('now')
