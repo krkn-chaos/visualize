@@ -308,6 +308,10 @@ local generateTimeSeriesQuery(query, legend) = [
     query():
       generateTimeSeriesQuery('topk(10,sum(ALERTS{severity!="none"}) by (alertname, severity))', '{{severity}}: {{alertname}}'),
   },
+  podDistribution: {
+    query():
+      generateTimeSeriesQuery('count(kube_pod_info{}) by (node)', '{{ node }}'),
+  },
   top10ContMem: {
     query():
       generateTimeSeriesQuery('topk(10, container_memory_rss{namespace!="",container!="POD",name!=""})', '{{ namespace }} - {{ name }}'),
