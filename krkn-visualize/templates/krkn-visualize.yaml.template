@@ -84,9 +84,9 @@ spec:
           name: sc-ocp-prom
         env:
         - name: GF_RENDERING_SERVER_URL
-          value: "http://renderer.krkn-visualize.svc:8081/render"
+          value: "http://renderer.krknvisualize.svc:8081/render"
         - name: GF_RENDERING_CALLBACK_URL
-          value: "http://krkn-visualize.krkn-visualize.svc:3000/"
+          value: "http://krknvisualize.krknvisualize.svc:3000/"
         - name: GF_LOG_FILTERS
           value: "rendering:debug"
       - name: krkn-visualize-syncer
