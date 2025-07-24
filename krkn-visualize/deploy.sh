@@ -1,5 +1,31 @@
 #!/usr/bin/env bash
 
+# ------------------------------------------------------------------------------
+# krkn-visualize deploy.sh
+#
+# Deploys a mutable Grafana pod with default dashboards for monitoring system
+# submetrics during workload/benchmark runs.
+#
+# Command Line Options:
+#   -c <kubectl_cmd>  : The (c)ommand to use for k8s admin (defaults to 'kubectl')
+#   -n <namespace>    : The (n)amespace in which to deploy the Grafana instance
+#                       (defaults to 'krkn-visualize')
+#   -p <grafana_pass> : The (p)assword to configure for the Grafana admin user
+#                       (defaults to 'admin')
+#   -i <dash_path>    : (I)mport dashboard from given path. Using this flag will
+#                       bypass the deployment process and only do the import to an
+#                       already-running Grafana pod. Can be a local path or a remote
+#                       URL beginning with http.
+#   -d                : (D)elete an existing deployment (namespace and Grafana)
+#   -h                : Show this help message and exit
+#
+# Example Usage:
+#   ./deploy.sh                       # Deploy Grafana in 'krkn-visualize' namespace with default password
+#   ./deploy.sh -n myns -p secret     # Deploy in 'myns' namespace with custom password
+#   ./deploy.sh -i dashboard.json     # Import dashboard to running Grafana
+#   ./deploy.sh -d                    # Delete deployment and namespace
+# ------------------------------------------------------------------------------
+
 set -e
 
 function _usage {
@@ -93,6 +119,7 @@ if [[ $k8s_cmd == "oc" ]]; then
   export deploy_template="templates/krkn_visualize_oc.yaml.template"
 else
   export deploy_template="templates/krkn-visualize.yaml.template"
+  export DASHBOARDS="k8s-performance.json"
 fi 
 
 echo "Dash imports ${dash_import[@]}"
@@ -191,8 +218,10 @@ else
   echo ""
   echo -e "\033[32mDeploying Grafana...\033[0m"
   grafana "apply"
-  echo "Port forward to 3000"
-  #$k8s_cmd -n $namespace port-forward service/krkn-visualize 3000 &
+  if [[ $k8s_cmd != "oc" ]]; then
+    echo "Port forward to 3000"
+    $k8s_cmd -n $namespace port-forward service/krkn-visualize 3000 &
+  fi 
   # Ugly, but need to slow things down when opening the port-forward
   sleep 10
 
