@@ -119,7 +119,6 @@ if [[ $k8s_cmd == "oc" ]]; then
   export deploy_template="templates/krkn_visualize_oc.yaml.template"
 else
   export deploy_template="templates/krkn-visualize.yaml.template"
-  export DASHBOARDS="k8s-performance.json"
 fi 
 
 echo "Dash imports ${dash_import[@]}"
@@ -221,12 +220,14 @@ else
   if [[ $k8s_cmd != "oc" ]]; then
     echo "Port forward to 3000"
     $k8s_cmd -n $namespace port-forward service/krkn-visualize 3000 &
+    visualize_route="localhost:3000"
+  else
+    echo "Getting route for oc"
+    visualize_route=$($k8s_cmd -n $namespace get route krkn-visualize -o jsonpath="{.spec.host}")
   fi 
+  
   # Ugly, but need to slow things down when opening the port-forward
   sleep 10
-
-  visualize_route=$($k8s_cmd -n $namespace get route krkn-visualize -o jsonpath="{.spec.host}")
-
   echo "visualize route $visualize_route"
   dash_import
 
