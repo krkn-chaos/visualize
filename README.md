@@ -47,3 +47,9 @@ You'll need to create 3 data sources connecting to krkn-telemetry, krkn-metrics 
 8. Remove the @ from before the timestamp field
 9. Save & test
 10. Repeat for each index
+
+
+## Import Dashboard After Grafana Creation
+
+
+Grafana v12.1.0 (ccd7b6ce7e)

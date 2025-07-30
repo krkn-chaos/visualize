@@ -648,7 +648,7 @@ local queries = import 'queries.libsonnet';
         ],
         datasource: {
           type: 'elasticsearch',
-          uid: '${Datasource}',
+          uid: '${Metrics}',
         },
         metrics: [
           {
