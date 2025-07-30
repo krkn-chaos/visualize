@@ -48,8 +48,16 @@ You'll need to create 3 data sources connecting to krkn-telemetry, krkn-metrics 
 9. Save & test
 10. Repeat for each index
 
+# Adding a New Dashboard
+1. Create folder under assets 
+2. Create panels.libsonnet, queries.libsonnet, and variables.libsonnet under the newly created folder
+3. Create jsonnet file under General or if its specific to kubernetes, k8s
+4. Run `make`
 
 ## Import Dashboard After Grafana Creation
+Edit import file to point to newly created rendered json 
+```sh
+cd krkn-visualize
+./import.sh
 
-
-Grafana v12.1.0 (ccd7b6ce7e)
+```
