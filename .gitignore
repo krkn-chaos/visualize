@@ -4,3 +4,5 @@ rendered
 tmp
 bin
 assets/vendor
+**/.DS_STORE
+.DS_STORE

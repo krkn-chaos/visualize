@@ -44,7 +44,7 @@ You'll need to create 3 data sources connecting to krkn-telemetry, krkn-metrics 
 5. Add the URL of your elasticsearch
 6. Add authentication into elastic search
 7. Give the corresponding index name you're configuring under Elasticsearch details
-8. Remove the @ from before the timestamp field
+8. Remove the @ from before the timestamp field (Alerts needs created_at)
 9. Save & test
 10. Repeat for each index
 
@@ -55,7 +55,7 @@ You'll need to create 3 data sources connecting to krkn-telemetry, krkn-metrics 
 4. Run `make`
 
 ## Import Dashboard After Grafana Creation
-Edit import file to point to newly created rendered json 
+Edit import file to point to newly created rendered json. Note the grafana version needs to match the grafannot listed [here](https://github.com/krkn-chaos/visualize/blob/main/templates/jsonnetfile.lock.json#L18), will hit loading errors if not 
 ```sh
 cd krkn-visualize
 ./import.sh
