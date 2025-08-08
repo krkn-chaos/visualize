@@ -1,10 +1,10 @@
-local panels = import '../../assets/node-scenarios/panels.libsonnet';
-local queries = import '../../assets/node-scenarios/queries.libsonnet';
-local variables = import '../../assets/node-scenarios/variables.libsonnet';
+local panels = import '../../assets/console-outage/panels.libsonnet';
+local queries = import '../../assets/console-outage/queries.libsonnet';
+local variables = import '../../assets/console-outage/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Node Scenarios - Chaos Engineering',
+  description: 'Application Outage Scenarios - Chaos Engineering',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Manual Node Chaos Engineering',
+  title: 'Manual App Outage Chaos Engineering',
   uid: null,
   version: 1,
   weekStart: '',
