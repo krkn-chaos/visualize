@@ -1,6 +1,6 @@
 local chaos_panels = import '../chaos-panels.libsonnet';
+local panels = import '../metrics-panels.libsonnet';
 local queries = import 'queries.libsonnet';
-
 {
   scenarioDetailsRow():: {
     collapsed: false,
@@ -2105,7 +2105,6 @@ local queries = import 'queries.libsonnet';
 
   getAllPanels():: [
     self.scenarioDetailsRow(),
-    self.podAlerts(),
     self.podScenarioUuidDetails(),
     self.regexRecoveryTime(),
     self.unrecoveredPods(),

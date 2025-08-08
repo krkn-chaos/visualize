@@ -1,6 +1,6 @@
-local panels = import '../../assets/-scenarios/panels.libsonnet';
-local queries = import '../../assets/-scenarios/queries.libsonnet';
-local variables = import '../../assets/-scenarios/variables.libsonnet';
+local panels = import '../../assets/pod-scenarios/panels.libsonnet';
+local queries = import '../../assets/pod-scenarios/queries.libsonnet';
+local variables = import '../../assets/pod-scenarios/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
