@@ -1,10 +1,10 @@
-local panels = import '../../assets/manual-pod-scenarios/panels.libsonnet';
-local queries = import '../../assets/manual-pod-scenarios/queries.libsonnet';
-local variables = import '../../assets/manual-pod-scenarios/variables.libsonnet';
+local panels = import '../../assets/console-outage/panels.libsonnet';
+local queries = import '../../assets/console-outage/queries.libsonnet';
+local variables = import '../../assets/console-outage/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Pod Scenarios - Chaos Engineering',
+  description: 'Application Outage Scenarios - Chaos Engineering',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -18,7 +18,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
   style: 'dark',
   tags: [
     'chaos-engineering',
-    'pod-disruption',
+    'node-disruption',
     'kubernetes',
     'reliability',
   ],
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Pod Scenarios - Chaos Engineering',
+  title: 'Manual App Outage Chaos Engineering',
   uid: null,
   version: 1,
   weekStart: '',

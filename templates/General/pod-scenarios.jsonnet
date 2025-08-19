@@ -1,10 +1,10 @@
-local panels = import '../../assets/node-scenarios/panels.libsonnet';
-local queries = import '../../assets/node-scenarios/queries.libsonnet';
-local variables = import '../../assets/node-scenarios/variables.libsonnet';
+local panels = import '../../assets/pod-scenarios/panels.libsonnet';
+local queries = import '../../assets/pod-scenarios/queries.libsonnet';
+local variables = import '../../assets/pod-scenarios/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Node Scenarios - Chaos Engineering',
+  description: 'Manual Test Pod Scenarios - Chaos Engineering',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -18,7 +18,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
   style: 'dark',
   tags: [
     'chaos-engineering',
-    'node-disruption',
+    'pod-disruption',
     'kubernetes',
     'reliability',
   ],
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Manual Node Chaos Engineering',
+  title: 'Pod Scenarios - Chaos Engineering',
   uid: null,
   version: 1,
   weekStart: '',
