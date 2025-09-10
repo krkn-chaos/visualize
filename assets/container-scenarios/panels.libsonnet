@@ -131,7 +131,7 @@ local queries = import 'queries.libsonnet';
     },
     gridPos: {
       h: 8,
-      w: 12,
+      w: 24,
       x: 12,
       y: 27,
     },
@@ -217,7 +217,7 @@ local queries = import 'queries.libsonnet';
   unrecoveredContainers():: {
     datasource: {
       type: 'elasticsearch',
-      uid: '${Datasource}',
+      uid: '${Metrics}',
     },
     fieldConfig: {
       defaults: {
@@ -461,7 +461,7 @@ local queries = import 'queries.libsonnet';
         bucketAggs: [],
         datasource: {
           type: 'elasticsearch',
-          uid: 'bc8a9e77-4816-4004-a752-7ac41f90e3a3',
+          uid: '${Metrics}',
         },
         metrics: [
           {
@@ -472,12 +472,12 @@ local queries = import 'queries.libsonnet';
             type: 'raw_data',
           },
         ],
-        query: 'run_uuid.keyword: $run_uuid AND scenarios.affected_pods.unrecovered.namespace: openshift-ovn-kuberenetes',
+        query: 'run_uuid.keyword: $run_uuid AND type.keyword: unrecovered AND metricName.keyword: affected_pods_recovery AND namespace.keyword: openshift-etcd',
         refId: 'A',
         timeField: 'timestamp',
       },
     ],
-    title: 'Unrecovered ovn pod scenario',
+    title: 'Unrecovered etcd container scenario',
     type: 'table',
   },
 
