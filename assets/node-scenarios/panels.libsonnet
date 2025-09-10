@@ -134,7 +134,7 @@ local queries = import 'queries.libsonnet';
       h: 8,
       w: 12,
       x: 0,
-      y: 11,
+      y: 19,
     },
     id: 1,
     options: {
