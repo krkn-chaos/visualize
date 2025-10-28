@@ -126,6 +126,57 @@ data:
         tlsSkipVerify: true
       version: 1
       editable: false
+    - name: Krkn Telemetry
+      type: elasticsearch
+      access: proxy
+      orgId: 1
+      url: ${ES_URL}
+      basicAuth: true
+      basicAuthUser: ${ES_USERNAME}
+      jsonData:
+        esVersion: 80
+        timeField: "timestamp"
+        logMessageField: message
+        logLevelField: level
+        index: krkn-telemetry*
+      secureJsonData:
+        basicAuthPassword: ${ES_PASSWORD}
+      version: 1
+      editable: true
+    - name: Krkn Metrics
+      type: elasticsearch
+      access: proxy
+      orgId: 1
+      url: ${ES_URL}
+      basicAuth: true
+      basicAuthUser: ${ES_USERNAME}
+      jsonData:
+        esVersion: 80
+        timeField: "timestamp"
+        logMessageField: message
+        logLevelField: level
+        index: krkn-metrics*
+      secureJsonData:
+        basicAuthPassword: ${ES_PASSWORD}
+      version: 1
+      editable: true
+    - name: Krkn Alerts
+      type: elasticsearch
+      access: proxy
+      orgId: 1
+      url: ${ES_URL}
+      basicAuth: true
+      basicAuthUser: ${ES_USERNAME}
+      jsonData:
+        esVersion: 80
+        timeField: "created_at"
+        logMessageField: message
+        logLevelField: level
+        index: krkn-alerts*
+      secureJsonData:
+        basicAuthPassword: ${ES_PASSWORD}
+      version: 1
+      editable: true
 ---
 apiVersion: v1
 kind: ConfigMap

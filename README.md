@@ -3,6 +3,13 @@
 This repo is very similar to [dittybopper](https://github.com/cloud-bulldozer/performance-dashboards/tree/master), this will be used to help users visualize their krkn runs as well as general data and performance of their clusters
 
 # How to run 
+```
+cd krkn-visualize
+export ES_URL=<elasticsearch url>
+export ES_USERNAME=<elasticsearch username>
+export ES_PASSWORD=<elasticsearch password>
+```
+
 
 On Kubernetes Cluster
 ```
