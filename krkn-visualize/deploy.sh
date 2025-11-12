@@ -13,6 +13,8 @@
 #   -p <grafana_pass> : The (p)assword to configure for the Grafana admin user
 #                       (defaults to 'admin')
 #   -d                : (D)elete an existing deployment (namespace and Grafana)
+#   -t <prometheus_url> : The (t)prometheus url to use for the Prometheus datasource
+#   -b <prometheus_bearer_token> : The (b)earer token to use for the Prometheus datasource
 #   -h                : Show this help message and exit
 #
 # Example Usage:
@@ -43,6 +45,11 @@ Usage: $(basename "${0}") [-c <kubectl_cmd>] [-n <namespace>] [-p <grafana_pwd>]
   -p <grafana_pass> : The (p)assword to configure for the Grafana admin user
                       (defaults to 'admin')
 
+  -t <prometheus_url> : The (t)prometheus url to use for the Prometheus datasource
+
+  -b <prometheus_bearer_token> : The (b)earer token to use for the Prometheus datasource
+                      (defaults to '')
+
   -d                : (D)elete an existing deployment
 
   -h                : Help
@@ -54,6 +61,9 @@ END
 
 export PROMETHEUS_USER=internal
 export GRAFANA_ADMIN_PASSWORD=admin
+export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
+
+
 export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
 export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:latest"} # Syncer image
@@ -83,6 +93,12 @@ while getopts ":c:m:n:p:i:dh" opt; do
       ;;
     d)
       delete=True
+      ;;
+    t)
+      export PROMETHEUS_URL=${OPTARG}
+      ;;
+    b)
+      export PROMETHEUS_BEARER=${OPTARG}
       ;;
     h)
       _usage
@@ -123,8 +139,10 @@ fi
 # Get environment values
 echo ""
 echo -e "\033[32mGetting environment vars...\033[0m"
-
-if [[ $k8s_cmd == "oc" ]]; then
+if [[ -z ${PROMETHEUS_URL} ]]; then
+  export PROMETHEUS_URL=${PROMETHEUS_URL:-""}
+  export PROMETHEUS_BEARER=${PROMETHEUS_BEARER:-""}
+elif [[ $k8s_cmd == "oc" ]]; then
   export PROMETHEUS_URL="https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091"
   export PROMETHEUS_BEARER=$($k8s_cmd create token -n openshift-monitoring prometheus-k8s --duration 240h || $k8s_cmd sa get-token -n openshift-monitoring prometheus-k8s || $k8s_cmd sa new-token -n openshift-monitoring prometheus-k8s)
 else
@@ -140,6 +158,8 @@ function namespace() {
 }
 
 function grafana() {
+
+  echo "es url: $ES_URL"
   envsubst < ${deploy_template} | $k8s_cmd "$1" -n "$namespace" -f -
   if [[ ! $delete ]]; then
     echo ""
