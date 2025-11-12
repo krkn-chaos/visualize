@@ -155,12 +155,19 @@ data:
       url: ${ES_URL}
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
+      isDefault: false
+      database: krkn-telemetry
+      withCredentials: false
       jsonData:
-        esVersion: 80
+        indexName: "krkn-telemetry*"
+        index: "krkn-telemetry*"
+        interval: "No pattern"
+        esVersion: "8.0.0"
         timeField: "timestamp"
-        logMessageField: message
-        logLevelField: level
-        index: krkn-telemetry*
+        logMessageField: "message"
+        logLevelField: "level"
+        maxConcurrentShardRequests: 5
+        includeFrozen: false
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1
@@ -172,12 +179,18 @@ data:
       url: ${ES_URL}
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
+      database: krkn-metrics
+      withCredentials: false
       jsonData:
-        esVersion: 80
+        index: "krkn-metrics*"
+        indexName: "krkn-metrics*"
+        interval: "No pattern"
+        esVersion: "8.0.0"
         timeField: "timestamp"
-        logMessageField: message
-        logLevelField: level
-        index: krkn-metrics*
+        logMessageField: "message"
+        logLevelField: "level"
+        maxConcurrentShardRequests: 5
+        includeFrozen: false
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1
@@ -189,12 +202,18 @@ data:
       url: ${ES_URL}
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
+      database: krkn-alerts
+      withCredentials: false
       jsonData:
-        esVersion: 80
+        index: "krkn-alerts*"
+        indexName: "krkn-alerts*"
+        interval: "No pattern"
+        esVersion: "8.0.0"
         timeField: "created_at"
-        logMessageField: message
-        logLevelField: level
-        index: krkn-alerts*
+        logMessageField: "message"
+        logLevelField: "level"
+        maxConcurrentShardRequests: 5
+        includeFrozen: false
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1

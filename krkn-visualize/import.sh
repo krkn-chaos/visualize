@@ -25,6 +25,8 @@ Usage: $(basename "${0}") [-c <kubectl_cmd>] [-n <namespace>] [-p <grafana_pwd>]
                       already-running Grafana pod. Can be a local path or a remote
                       URL beginning with http.
 
+  -l <grafana_url>  : (L)ocal grafana, pass the grafana url 
+
   -h                : Help
 
 END
@@ -52,6 +54,9 @@ while getopts ":c:m:n:p:i:dh" opt; do
       ;;
     i)
       dash_import+=(${OPTARG})
+      ;;
+    l)
+      export LOCAL_GRAFANA_URL=${OPTARG}
       ;;
     h)
       _usage
@@ -101,6 +106,8 @@ function dash_import(){
 
 if [[ $k8s_cmd == "oc" ]]; then
   visualize_route=$(oc -n $namespace get route krkn-visualize -o jsonpath="{.spec.host}")
+elif [[ -n $LOCAL_GRAFANA_URL ]]; then
+  visualize_route=$LOCAL_GRAFANA_URL
 else
   visualize_route="localhost:3000"
 fi
