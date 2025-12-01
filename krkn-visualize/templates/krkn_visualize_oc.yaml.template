@@ -95,6 +95,8 @@ spec:
         - mountPath: /etc/grafana/provisioning/datasources
           name: sc-ocp-prom
         env:
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-opensearch-datasource"
         - name: GF_RENDERING_SERVER_URL
           value: "http://renderer.krkn-visualize.svc:8081/render"
         - name: GF_RENDERING_CALLBACK_URL
@@ -141,79 +143,75 @@ data:
           Bearer ${PROMETHEUS_BEARER}
       version: 1
       editable: false
-    - name: OBO
-      type: prometheus
-      access: proxy
-      orgId: 1
-      url: ${OBO_URL}
-      version: 1
-      editable: false
     - name: Krkn Telemetry
-      type: elasticsearch
-      access: proxy
+      type: grafana-opensearch-datasource
       orgId: 1
       url: ${ES_URL}
+      access: proxy
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
       isDefault: false
-      database: krkn-telemetry
+      database: "krkn-telemetry*"
       withCredentials: false
       jsonData:
-        indexName: "krkn-telemetry*"
+        database: "krkn-telemetry*"
         index: "krkn-telemetry*"
-        interval: "No pattern"
-        esVersion: "8.0.0"
+        indexName: "krkn-telemetry*"
         timeField: "timestamp"
         logMessageField: "message"
         logLevelField: "level"
+        version: "2.0.0"
         maxConcurrentShardRequests: 5
         includeFrozen: false
+        pplEnabled: true
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1
       editable: true
     - name: Krkn Metrics
-      type: elasticsearch
-      access: proxy
+      type: grafana-opensearch-datasource
       orgId: 1
       url: ${ES_URL}
       basicAuth: true
+      access: proxy
       basicAuthUser: ${ES_USERNAME}
-      database: krkn-metrics
+      database: "krkn-metrics*"
       withCredentials: false
       jsonData:
+        database: "krkn-metrics*"
         index: "krkn-metrics*"
         indexName: "krkn-metrics*"
-        interval: "No pattern"
-        esVersion: "8.0.0"
         timeField: "timestamp"
         logMessageField: "message"
         logLevelField: "level"
+        version: "2.0.0"
         maxConcurrentShardRequests: 5
         includeFrozen: false
+        pplEnabled: true
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1
       editable: true
     - name: Krkn Alerts
-      type: elasticsearch
-      access: proxy
+      type: grafana-opensearch-datasource
       orgId: 1
       url: ${ES_URL}
+      access: proxy
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
-      database: krkn-alerts
+      database: "krkn-alerts*"
       withCredentials: false
       jsonData:
+        database: "krkn-alerts*"
         index: "krkn-alerts*"
         indexName: "krkn-alerts*"
-        interval: "No pattern"
-        esVersion: "8.0.0"
         timeField: "created_at"
         logMessageField: "message"
         logLevelField: "level"
+        version: "2.0.0"
         maxConcurrentShardRequests: 5
         includeFrozen: false
+        pplEnabled: true
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1

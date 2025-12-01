@@ -14,7 +14,7 @@ local queries = import 'queries.libsonnet';
 
   nodeScenarioUUIDDetails():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -72,7 +72,7 @@ local queries = import 'queries.libsonnet';
 
   readyRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -178,7 +178,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
@@ -206,7 +206,7 @@ local queries = import 'queries.libsonnet';
 
   notReadyRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -312,7 +312,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
@@ -340,7 +340,7 @@ local queries = import 'queries.libsonnet';
 
   runningRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -446,7 +446,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
@@ -474,7 +474,7 @@ local queries = import 'queries.libsonnet';
 
   stoppedRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -580,7 +580,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [

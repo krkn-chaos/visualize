@@ -127,52 +127,74 @@ data:
       version: 1
       editable: false
     - name: Krkn Telemetry
-      type: elasticsearch
+      type: grafana-opensearch-datasource
       access: proxy
       orgId: 1
       url: ${ES_URL}
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
+      isDefault: false
+      database: "krkn-telemetry*"
+      withCredentials: false
       jsonData:
-        esVersion: 80
+        database: "krkn-telemetry*"
+        index: "krkn-telemetry*"
+        indexName: "krkn-telemetry*"
         timeField: "timestamp"
-        logMessageField: message
-        logLevelField: level
-        index: krkn-telemetry*
+        logMessageField: "message"
+        logLevelField: "level"
+        version: "2.0.0"
+        maxConcurrentShardRequests: 5
+        includeFrozen: false
+        pplEnabled: true
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1
       editable: true
     - name: Krkn Metrics
-      type: elasticsearch
+      type: grafana-opensearch-datasource
       access: proxy
       orgId: 1
       url: ${ES_URL}
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
+      database: "krkn-metrics*"
+      withCredentials: false
       jsonData:
-        esVersion: 80
+        database: "krkn-metrics*"
+        index: "krkn-metrics*"
+        indexName: "krkn-metrics*"
         timeField: "timestamp"
-        logMessageField: message
-        logLevelField: level
-        index: krkn-metrics*
+        logMessageField: "message"
+        logLevelField: "level"
+        version: "2.0.0"
+        maxConcurrentShardRequests: 5
+        includeFrozen: false
+        pplEnabled: true
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1
       editable: true
     - name: Krkn Alerts
-      type: elasticsearch
+      type: grafana-opensearch-datasource
       access: proxy
       orgId: 1
       url: ${ES_URL}
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
+      database: "krkn-alerts*"
+      withCredentials: false
       jsonData:
-        esVersion: 80
+        database: "krkn-alerts*"
+        index: "krkn-alerts*"
+        indexName: "krkn-alerts*"
         timeField: "created_at"
-        logMessageField: message
-        logLevelField: level
-        index: krkn-alerts*
+        logMessageField: "message"
+        logLevelField: "level"
+        version: "2.0.0"
+        maxConcurrentShardRequests: 5
+        includeFrozen: false
+        pplEnabled: true
       secureJsonData:
         basicAuthPassword: ${ES_PASSWORD}
       version: 1

@@ -13,7 +13,7 @@ local queries = import 'queries.libsonnet';
 
   containerScenarioUuidDetails():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -56,7 +56,7 @@ local queries = import 'queries.libsonnet';
       {
         alias: '',
         bucketAggs: [],
-        datasource: { type: 'elasticsearch', uid: '${Datasource}' },
+        datasource: { type: 'grafana-opensearch-datasource', uid: '${Datasource}' },
         metrics: [
           { id: '1', settings: { size: '500' }, type: 'raw_data' },
         ],
@@ -71,7 +71,7 @@ local queries = import 'queries.libsonnet';
 
   etcdRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -188,7 +188,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
@@ -216,7 +216,7 @@ local queries = import 'queries.libsonnet';
 
   unrecoveredContainers():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -460,7 +460,7 @@ local queries = import 'queries.libsonnet';
         alias: '',
         bucketAggs: [],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [

@@ -31,7 +31,7 @@ local var = g.dashboard.variable;
       value: '',
     },
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: datasourceUid,
     },
     definition: definition,

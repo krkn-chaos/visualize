@@ -1,7 +1,7 @@
 {
     scenarioAlerts():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Alerts}',
     },
     fieldConfig: {
@@ -162,7 +162,7 @@
         alias: '',
         bucketAggs: [],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Alerts}',
         },
         format: 'table',

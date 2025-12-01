@@ -8,7 +8,7 @@ TEMPLATESDIR = templates
 ASSETS := $(wildcard assets/**/*.libsonnet)
 OUTPUTDIR = rendered
 ALLDIRS = $(BINDIR) $(OUTPUTDIR)
-SYNCER_IMG_TAG ?= quay.io/krkn-chaos/visualize-syncer:latest
+SYNCER_IMG_TAG ?= quay.io/krkn-chaos/visualize-syncer:opensearch-latest
 PLATFORM = linux/amd64,linux/arm64
 
 # Get all templates at $(TEMPLATESDIR)

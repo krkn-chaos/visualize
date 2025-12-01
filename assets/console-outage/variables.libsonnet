@@ -28,7 +28,7 @@
       value: '',
     },
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: datasourceUid,
     },
     definition: definition,
@@ -48,9 +48,9 @@
 
   // Get all variables
   getAllVariables():: [
-    self.datasourceVariable('Datasource', 'Datasource', 'elasticsearch', '/.*Telemetry*./'),
-    self.datasourceVariable('Metrics', 'Metrics', 'elasticsearch', '/.*Metrics*./'),
-    self.datasourceVariable('Alerts', 'Alerts', 'elasticsearch', '/.*Alerts*./'),
+    self.datasourceVariable('Datasource', 'Datasource', 'grafana-opensearch-datasource', '/.*Telemetry*./'),
+    self.datasourceVariable('Metrics', 'Metrics', 'grafana-opensearch-datasource', '/.*Metrics*./'),
+    self.datasourceVariable('Alerts', 'Alerts', 'grafana-opensearch-datasource', '/.*Alerts*./'),
     self.queryVariable('platform', 'platform', '{"find": "terms", "field": "cloud_infrastructure.keyword"}', '${Datasource}'),
     self.queryVariable('cloud_type', 'cloud_type', '{"find": "terms", "field": "cloud_type.keyword", "query": "cloud_infrastructure.keyword: $platform"}', '${Datasource}'),
     self.queryVariable('networkType', 'networkType', '{"find": "terms", "field": "network_plugins.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),

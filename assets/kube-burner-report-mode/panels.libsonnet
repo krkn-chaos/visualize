@@ -7,7 +7,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
 
     base(title, unit, targets, gridPos):
       table.new(title)
-      + table.datasource.withType('elasticsearch')
+      + table.datasource.withType('grafana-opensearch-datasource')
       + table.datasource.withUid('$Datasource')
       + table.standardOptions.withUnit(unit)
       + table.queryOptions.withTargets(targets)
@@ -338,7 +338,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     base(title, unit, targets, gridPos):
       bargauge.new(title)
       + bargauge.queryOptions.withTargets(targets)
-      + bargauge.datasource.withType('elasticsearch')
+      + bargauge.datasource.withType('grafana-opensearch-datasource')
       + bargauge.datasource.withUid('$Datasource')
       + bargauge.standardOptions.withUnit(unit)
       + bargauge.gridPos.withX(gridPos.x)
@@ -398,7 +398,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
 
     base(title, unit, targets, gridPos):
       barchart.new(title)
-      + barchart.datasource.withType('elasticsearch')
+      + barchart.datasource.withType('grafana-opensearch-datasource')
       + barchart.datasource.withUid('$Datasource')
       + barchart.standardOptions.withUnit(unit)
       + barchart.queryOptions.withTargets(targets)
@@ -470,7 +470,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       timeSeries.new(title)
       + timeSeries.queryOptions.withTargets(targets)
       + timeSeries.queryOptions.withMaxDataPoints(maxPoints)
-      + timeSeries.datasource.withType('elasticsearch')
+      + timeSeries.datasource.withType('grafana-opensearch-datasource')
       + timeSeries.datasource.withUid('$Datasource')
       + timeSeries.standardOptions.withUnit(unit)
       + timeSeries.gridPos.withX(gridPos.x)

@@ -1,6 +1,6 @@
 local variables = import './variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
-local elasticsearch = g.query.elasticsearch;
+local opensearch = g.query.elasticsearch;
 
 {
   containerScenarioUuidDetails: 'run_uuid.keyword: $run_uuid',

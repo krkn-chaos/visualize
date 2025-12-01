@@ -5,7 +5,7 @@ local queries = import 'queries.libsonnet';
 {
   consoleDownTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -135,7 +135,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
