@@ -3,7 +3,7 @@ local var = g.dashboard.variable;
 
 {
   Datasource:
-    var.datasource.new('Datasource', 'elasticsearch')
+    var.datasource.new('Datasource', 'grafana-opensearch-datasource')
     + var.datasource.withRegex('/.*kube-burner.*/')
     + var.query.withRefresh(1)
     + var.query.selectionOptions.withIncludeAll(false)

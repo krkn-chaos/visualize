@@ -1,6 +1,6 @@
 {etcdRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -117,7 +117,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
@@ -145,7 +145,7 @@
 
   etcd99thWalFsyncLatency():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -248,7 +248,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -273,7 +273,7 @@
 
   etcd99thRoundTripTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -376,7 +376,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -401,7 +401,7 @@
 
   ovnMasterCPU():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -481,7 +481,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -511,7 +511,7 @@
 
   ovnMasterMemUsage():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -624,7 +624,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -652,7 +652,7 @@
 
   ovnCPUUsage():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -766,7 +766,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -794,7 +794,7 @@
 
   apiInflightRequests():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -897,7 +897,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -921,7 +921,7 @@
   },
   maxMemoryKubelet():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: "Max memory usage from all worker's kubelet",
@@ -1028,7 +1028,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1051,7 +1051,7 @@
   },
   cpuKubelet():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: "Average CPU usage from all worker's kubelet",
@@ -1158,7 +1158,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1181,7 +1181,7 @@
   },
   mastersMemoryUsageGauge():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: 'Average memory usage of master nodes compared to their maximum observed usage for the selected period (max-memory-masters).',
@@ -1264,7 +1264,7 @@
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,

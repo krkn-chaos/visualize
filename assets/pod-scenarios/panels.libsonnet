@@ -13,7 +13,7 @@ local queries = import 'queries.libsonnet';
 
   podScenarioUuidDetails():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -56,7 +56,7 @@ local queries = import 'queries.libsonnet';
       {
         alias: '',
         bucketAggs: [],
-        datasource: { type: 'elasticsearch', uid: '${Datasource}' },
+        datasource: { type: 'grafana-opensearch-datasource', uid: '${Datasource}' },
         metrics: [
           { id: '1', settings: { size: '500' }, type: 'raw_data' },
         ],
@@ -72,7 +72,7 @@ local queries = import 'queries.libsonnet';
 
   monitoringRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -214,7 +214,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Datasource}',
         },
         metrics: [
@@ -242,7 +242,7 @@ local queries = import 'queries.libsonnet';
 
   regexRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -359,7 +359,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Datasource}',
         },
         metrics: [
@@ -387,7 +387,7 @@ local queries = import 'queries.libsonnet';
 
   ovnRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -504,7 +504,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Datasource}',
         },
         metrics: [
@@ -532,7 +532,7 @@ local queries = import 'queries.libsonnet';
 
   etcdRecoveryTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -649,7 +649,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         metrics: [
@@ -677,7 +677,7 @@ local queries = import 'queries.libsonnet';
 
   unrecoveredPods():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
     },
     fieldConfig: {
@@ -921,7 +921,7 @@ local queries = import 'queries.libsonnet';
         alias: '',
         bucketAggs: [],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: 'bc8a9e77-4816-4004-a752-7ac41f90e3a3',
         },
         metrics: [
@@ -944,7 +944,7 @@ local queries = import 'queries.libsonnet';
 
   etcd99thWalFsyncLatency():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -1047,7 +1047,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1072,7 +1072,7 @@ local queries = import 'queries.libsonnet';
 
   etcd99thRoundTripTime():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -1175,7 +1175,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1200,7 +1200,7 @@ local queries = import 'queries.libsonnet';
 
   ovnMasterCPU():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -1280,7 +1280,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1310,7 +1310,7 @@ local queries = import 'queries.libsonnet';
 
   ovnMasterMemUsage():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     fieldConfig: {
@@ -1423,7 +1423,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1451,7 +1451,7 @@ local queries = import 'queries.libsonnet';
 
   ovnCPUUsage():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -1565,7 +1565,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1593,7 +1593,7 @@ local queries = import 'queries.libsonnet';
 
   apiInflightRequests():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: '',
@@ -1696,7 +1696,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1720,7 +1720,7 @@ local queries = import 'queries.libsonnet';
   },
   maxMemoryKubelet():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: "Max memory usage from all worker's kubelet",
@@ -1827,7 +1827,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1850,7 +1850,7 @@ local queries = import 'queries.libsonnet';
   },
   cpuKubelet():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: "Average CPU usage from all worker's kubelet",
@@ -1957,7 +1957,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
@@ -1980,7 +1980,7 @@ local queries = import 'queries.libsonnet';
   },
   mastersMemoryUsageGauge():: {
     datasource: {
-      type: 'elasticsearch',
+      type: 'grafana-opensearch-datasource',
       uid: '${Metrics}',
     },
     description: 'Average memory usage of master nodes compared to their maximum observed usage for the selected period (max-memory-masters).',
@@ -2063,7 +2063,7 @@ local queries = import 'queries.libsonnet';
           },
         ],
         datasource: {
-          type: 'elasticsearch',
+          type: 'grafana-opensearch-datasource',
           uid: '${Metrics}',
         },
         hide: false,
