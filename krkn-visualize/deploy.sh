@@ -143,6 +143,7 @@ if [[ -n ${PROMETHEUS_URL} ]]; then
   export PROMETHEUS_URL=${PROMETHEUS_URL:-""}
   export PROMETHEUS_BEARER=${PROMETHEUS_BEARER:-""}
 elif [[ $k8s_cmd == "oc" ]]; then
+  echo "oc" 
   export PROMETHEUS_URL="https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091"
   export PROMETHEUS_BEARER=$($k8s_cmd create token -n openshift-monitoring prometheus-k8s --duration 240h || $k8s_cmd sa get-token -n openshift-monitoring prometheus-k8s || $k8s_cmd sa new-token -n openshift-monitoring prometheus-k8s)
 else
