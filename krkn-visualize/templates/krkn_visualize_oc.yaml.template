@@ -151,10 +151,11 @@ data:
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
       isDefault: false
-      database: "krkn-telemetry*"
+      database: "krkn-telemetry"
       withCredentials: false
       jsonData:
-        database: "krkn-telemetry*"
+        flavor: opensearch
+        database: "krkn-telemetry"
         index: "krkn-telemetry*"
         indexName: "krkn-telemetry*"
         timeField: "timestamp"
@@ -175,10 +176,11 @@ data:
       basicAuth: true
       access: proxy
       basicAuthUser: ${ES_USERNAME}
-      database: "krkn-metrics*"
+      database: "krkn-metrics"
       withCredentials: false
       jsonData:
-        database: "krkn-metrics*"
+        flavor: opensearch
+        database: "krkn-metrics"
         index: "krkn-metrics*"
         indexName: "krkn-metrics*"
         timeField: "timestamp"
@@ -199,10 +201,11 @@ data:
       access: proxy
       basicAuth: true
       basicAuthUser: ${ES_USERNAME}
-      database: "krkn-alerts*"
+      database: "krkn-alerts"
       withCredentials: false
       jsonData:
-        database: "krkn-alerts*"
+        flavor: opensearch
+        database: "krkn-alerts"
         index: "krkn-alerts*"
         indexName: "krkn-alerts*"
         timeField: "created_at"
