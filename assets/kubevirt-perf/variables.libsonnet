@@ -14,7 +14,7 @@ local var = g.dashboard.variable;
     + var.query.withDatasourceFromVariable(self.Datasource)
     + var.query.queryTypes.withLabelValues(
       'namespace',
-      'kubevirt_vmi_info',
+      'kube_namespace_status_phase',
     )
     + var.query.generalOptions.withLabel('Namespace')
     + var.query.withSort(0)
