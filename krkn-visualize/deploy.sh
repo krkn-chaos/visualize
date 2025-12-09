@@ -139,7 +139,7 @@ fi
 # Get environment values
 echo ""
 echo -e "\033[32mGetting environment vars...\033[0m"
-if [[ -z ${PROMETHEUS_URL} ]]; then
+if [[ -n ${PROMETHEUS_URL} ]]; then
   export PROMETHEUS_URL=${PROMETHEUS_URL:-""}
   export PROMETHEUS_BEARER=${PROMETHEUS_BEARER:-""}
 elif [[ $k8s_cmd == "oc" ]]; then
