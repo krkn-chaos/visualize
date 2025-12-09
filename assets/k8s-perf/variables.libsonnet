@@ -10,7 +10,12 @@ local var = g.dashboard.variable;
     + var.query.selectionOptions.withMulti(false),
 
   _worker_node:
-    var.query.new('_worker_node', 'label_values(kube_node_labels{}, exported_node)')
+    var.query.new('_worker_node')
+    + var.query.withDatasourceFromVariable(self.Datasource)
+    + var.query.queryTypes.withLabelValues(
+      'node',
+      'kube_node_role{role=~"worker"}',
+    )
     + var.query.generalOptions.withLabel('Worker')
     + var.query.withSort(0)
     + var.query.withRefresh(2)
@@ -18,7 +23,12 @@ local var = g.dashboard.variable;
     + var.query.selectionOptions.withMulti(true),
 
   namespace:
-    var.query.new('namespace', 'label_values(kube_pod_info, exported_namespace)')
+    var.query.new('namespace')
+    + var.query.withDatasourceFromVariable(self.Datasource)
+    + var.query.queryTypes.withLabelValues(
+      'namespace',
+      'kube_pod_info',
+    )
     + var.query.generalOptions.withLabel('Namespace')
     + var.query.withSort(0)
     + var.query.withRefresh(2)
@@ -26,19 +36,29 @@ local var = g.dashboard.variable;
     + var.query.selectionOptions.withMulti(false),
 
   block_device:
-    var.query.new('block_device', 'label_values(node_disk_written_bytes_total,device)')
+    var.query.new('block_device')
+    + var.query.withDatasourceFromVariable(self.Datasource)
+    + var.query.queryTypes.withLabelValues(
+      'device',
+      'node_disk_written_bytes_total',
+    )
     + var.query.generalOptions.withLabel('Block device')
     + var.query.withSort(0)
-    + var.datasource.withRegex('/^(?:(?!dm|rb).)*$/')
+    + var.query.withRegex('/^(?:(?!dm|rb).)*$/')
     + var.query.withRefresh(2)
     + var.query.selectionOptions.withIncludeAll(true)
     + var.query.selectionOptions.withMulti(true),
 
   net_device:
-    var.query.new('net_device', 'label_values(node_network_receive_bytes_total,device)')
+    var.query.new('net_device')
+    + var.query.withDatasourceFromVariable(self.Datasource)
+    + var.query.queryTypes.withLabelValues(
+      'device',
+      'node_network_receive_bytes_total',
+    )
     + var.query.generalOptions.withLabel('Network device')
     + var.query.withSort(0)
-    + var.datasource.withRegex('/^((br|en|et).*)$/')
+    + var.query.withRegex('/^((br|en|et).*)$/')
     + var.query.withRefresh(2)
     + var.query.selectionOptions.withIncludeAll(true)
     + var.query.selectionOptions.withMulti(true),
