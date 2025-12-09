@@ -26,8 +26,7 @@ local var = g.dashboard.variable;
     var.query.new('namespace')
     + var.query.withDatasourceFromVariable(self.Datasource)
     + var.query.queryTypes.withLabelValues(
-      'namespace',
-      'kube_pod_info',
+      'namespace'
     )
     + var.query.generalOptions.withLabel('Namespace')
     + var.query.withSort(0)
