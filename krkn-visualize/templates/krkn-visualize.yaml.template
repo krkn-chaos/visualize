@@ -83,6 +83,8 @@ spec:
         - mountPath: /etc/grafana/provisioning/datasources
           name: sc-ocp-prom
         env:
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-opensearch-datasource"
         - name: GF_RENDERING_SERVER_URL
           value: "http://renderer.krkn-visualize.svc:8081/render"
         - name: GF_RENDERING_CALLBACK_URL
@@ -124,6 +126,9 @@ data:
       isDefault: true
       jsonData:
         tlsSkipVerify: true
+        httpHeaderName1: "Authorization"
+      secureJsonData:
+        httpHeaderValue1: "Bearer ${PROMETHEUS_BEARER}"
       version: 1
       editable: false
     - name: Krkn Telemetry
