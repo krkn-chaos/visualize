@@ -23,7 +23,7 @@ g.dashboard.new('KubeVirt Performance')
 
 + g.dashboard.withPanels([
   g.panel.row.new('VMI Overview')
-  + g.panel.row.withCollapsed(false)
+  + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 0, w: 24, h: 1 })
   + g.panel.row.withPanels([
     panels.stat.genericStatPanel('Total VMIs', 'none', queries.vmiCountTotal.query(), { x: 0, y: 1, w: 8, h: 3 }),
@@ -31,40 +31,40 @@ g.dashboard.new('KubeVirt Performance')
   ]),
 
   g.panel.row.new('VMI Phase Status')
-  + g.panel.row.withCollapsed(false)
-  + g.panel.row.withGridPos({ x: 0, y: 12, w: 24, h: 1 })
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 1, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Phase', 'none', queries.vmiPhaseCount.query(), { x: 0, y: 13, w: 12, h: 6 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Namespace', 'none', queries.vmiCountByNamespace.query(), { x: 12, y: 13, w: 12, h: 6 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Phase', 'none', queries.vmiPhaseCount.query(), { x: 0, y: 2, w: 12, h: 6 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Namespace', 'none', queries.vmiCountByNamespace.query(), { x: 12, y: 2, w: 12, h: 6 }),
   ]),
 
   g.panel.row.new('CPU & Memory')
-  + g.panel.row.withCollapsed(false)
-  + g.panel.row.withGridPos({ x: 0, y: 19, w: 24, h: 1 })
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 2, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI CPU Usage', 'percentunit', queries.vmiCpuUsage.query(), { x: 0, y: 20, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Memory Usage', 'bytes', queries.vmiMemoryUsage.query(), { x: 12, y: 20, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI CPU Usage', 'percentunit', queries.vmiCpuUsage.query(), { x: 0, y: 3, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Memory Usage', 'bytes', queries.vmiMemoryUsage.query(), { x: 12, y: 3, w: 12, h: 8 }),
   ]),
 
   g.panel.row.new('Network')
-  + g.panel.row.withCollapsed(false)
-  + g.panel.row.withGridPos({ x: 0, y: 28, w: 24, h: 1 })
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 3, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Receive', 'Bps', queries.vmiNetworkReceive.query(), { x: 0, y: 29, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Transmit', 'Bps', queries.vmiNetworkTransmit.query(), { x: 12, y: 29, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Receive Packets', 'pps', queries.vmiNetworkReceivePackets.query(), { x: 0, y: 37, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Transmit Packets', 'pps', queries.vmiNetworkTransmitPackets.query(), { x: 12, y: 37, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Receive Errors', 'pps', queries.vmiNetworkReceiveErrors.query(), { x: 0, y: 45, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Transmit Errors', 'pps', queries.vmiNetworkTransmitErrors.query(), { x: 12, y: 45, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Receive', 'Bps', queries.vmiNetworkReceive.query(), { x: 0, y: 4, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Transmit', 'Bps', queries.vmiNetworkTransmit.query(), { x: 12, y: 4, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Receive Packets', 'pps', queries.vmiNetworkReceivePackets.query(), { x: 0, y: 12, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Transmit Packets', 'pps', queries.vmiNetworkTransmitPackets.query(), { x: 12, y: 12, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Receive Errors', 'pps', queries.vmiNetworkReceiveErrors.query(), { x: 0, y: 20, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Network Transmit Errors', 'pps', queries.vmiNetworkTransmitErrors.query(), { x: 12, y: 20, w: 12, h: 8 }),
   ]),
 
   g.panel.row.new('Storage')
-  + g.panel.row.withCollapsed(false)
-  + g.panel.row.withGridPos({ x: 0, y: 53, w: 24, h: 1 })
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 4, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Read Rate', 'Bps', queries.vmiStorageRead.query(), { x: 0, y: 54, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Write Rate', 'Bps', queries.vmiStorageWrite.query(), { x: 12, y: 54, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Read IOPS', 'iops', queries.vmiStorageReadIops.query(), { x: 0, y: 62, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Write IOPS', 'iops', queries.vmiStorageWriteIops.query(), { x: 12, y: 62, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Read Rate', 'Bps', queries.vmiStorageRead.query(), { x: 0, y: 5, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Write Rate', 'Bps', queries.vmiStorageWrite.query(), { x: 12, y: 5, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Read IOPS', 'iops', queries.vmiStorageReadIops.query(), { x: 0, y: 13, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Storage Write IOPS', 'iops', queries.vmiStorageWriteIops.query(), { x: 12, y: 13, w: 12, h: 8 }),
   ]),
 ])
