@@ -67,7 +67,7 @@ export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
 export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:opensearch-latest"} # Syncer image
-export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"quay.io/cloud-bulldozer/grafana:9.4.3"} # Grafana image
+export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"grafana/grafana:10.4.0"} # Grafana image
 export GRAFANA_RENDERER_IMAGE=${GRAFANA_RENDERER_IMAGE:-"grafana/grafana-image-renderer:latest"} # Grafana renderer image
 
 namespace_file="$(dirname $(realpath ${BASH_SOURCE[0]}))/templates/krkn_visualize_ns.yaml.template"
