@@ -15,7 +15,7 @@ local generateTimeSeriesQuery(query, legend) = [
 {
   workersCPU: {
     query():
-      generateTimeSeriesQuery('count by (phase) (kubevirt_vmi_phase_count{namespace=~"$namespace"})','{{phase}}'),
+      generateTimeSeriesQuery('count by (phase) (kubevirt_vmi_phase_count{namespace=~"$namespace"})', '{{phase}}'),
   },
   controlPlanesCPU: {
     query():
@@ -23,7 +23,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   workersLoad1: {
     query():
-      generateTimeSeriesQuery('count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace"})','{{namespace}}'),
+      generateTimeSeriesQuery('count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace"})', '{{namespace}}'),
   },
   controlPlanesLoad1: {
     query():
