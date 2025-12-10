@@ -17,7 +17,6 @@ g.dashboard.new('KubeVirt Performance')
 + g.dashboard.withVariables([
   variables.Datasource,
   variables.namespace,
-  variables.vmi,
   variables.interval,
 ])
 
