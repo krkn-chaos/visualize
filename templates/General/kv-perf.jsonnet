@@ -17,12 +17,8 @@ g.dashboard.new('KV Performance')
 + g.dashboard.graphTooltip.withSharedCrosshair()
 + g.dashboard.withVariables([
   variables.Datasource,
-  variables.master_node,
   variables.worker_node,
-  variables.infra_node,
   variables.namespace,
-  variables.block_device,
-  variables.net_device,
   variables.interval,
 ])
 + g.dashboard.withPanels([
@@ -41,7 +37,7 @@ g.dashboard.new('KV Performance')
   + g.panel.row.withPanels([
     panels.timeSeries.genericLegend('ovnkube-control-plane CPU Usage', 'percent', queries.ovnKubeControlPlaneCPU.query(), { x: 0, y: 1, w: 12, h: 8 }),
     panels.timeSeries.genericLegend('ovnkube-control-plane Memory Usage', 'bytes', queries.ovnKubeControlPlaneMem.query(), { x: 12, y: 1, w: 12, h: 8 }),
-   
+
   ]),
   g.panel.row.new('Cluster Details')
   + g.panel.row.withGridPos({ x: 0, y: 0, w: 24, h: 1 })
