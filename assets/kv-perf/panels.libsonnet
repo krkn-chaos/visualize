@@ -1,79 +1,100 @@
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  timeSeries: {
-    local timeSeries = g.panel.timeSeries,
-    local fieldOverride = g.panel.timeSeries.fieldOverride,
-    local custom = timeSeries.fieldConfig.defaults.custom,
-    local options = timeSeries.options,
-    local standardOptions = timeSeries.standardOptions,
-    local byRegexp = timeSeries.standardOptions.override.byRegexp,
-
-    generic(title, unit, targets, gridPos):
-      timeSeries.new(title)
-      + timeSeries.queryOptions.withTargets(targets)
-      + timeSeries.datasource.withType('prometheus')
-      + timeSeries.datasource.withUid('$Datasource')
-      + timeSeries.standardOptions.withUnit(unit)
-      + timeSeries.gridPos.withX(gridPos.x)
-      + timeSeries.gridPos.withY(gridPos.y)
-      + timeSeries.gridPos.withH(gridPos.h)
-      + timeSeries.gridPos.withW(gridPos.w)
-      + custom.withSpanNulls('false')
-      + options.tooltip.withMode('multi')
-      + options.tooltip.withSort('desc')
-      + options.legend.withDisplayMode('table'),
-
-    genericLegend(title, unit, targets, gridPos):
-      self.generic(title, unit, targets, gridPos)
-      + options.legend.withShowLegend(true)
-      + options.legend.withCalcs([
-        'mean',
-        'min',
-        'max',
-      ])
-      + options.legend.withSortBy('Max')
-      + options.legend.withSortDesc(true)
-      + options.legend.withPlacement('bottom'),
-
-    genericLegendCounter(title, unit, targets, gridPos):
-      self.generic(title, unit, targets, gridPos)
-      + options.legend.withShowLegend(true)
-      + options.legend.withCalcs([
-        'first',
-        'min',
-        'max',
-        'last',
-      ])
-      + options.legend.withSortBy('Max')
-      + options.legend.withSortDesc(true)
-      + options.legend.withPlacement('bottom'),
-
-    genericLegendCounterSumRightHand(title, unit, targets, gridPos):
-      self.genericLegendCounter(title, unit, targets, gridPos)
-      + options.legend.withDisplayMode('table')
-      + options.legend.withSortBy('Max')
-      + standardOptions.withOverrides([
-        byRegexp.new('sum')
-        + byRegexp.withProperty('custom.axisPlacement', 'right')
-        + byRegexp.withProperty('custom.axisLabel', 'sum'),
-      ]),
+  kubevirt_info():: {
+    datasource: {
+      type: 'prometheus',
+      uid: '${Datasource}',
+    },
+    fieldConfig: {
+      defaults: {
+        color: {
+          mode: 'palette-classic',
+        },
+        custom: {
+          axisCenteredZero: false,
+          axisColorMode: 'text',
+          axisLabel: '',
+          axisPlacement: 'auto',
+          barAlignment: 0,
+          drawStyle: 'line',
+          fillOpacity: 0,
+          gradientMode: 'none',
+          hideFrom: {
+            legend: false,
+            tooltip: false,
+            viz: false,
+          },
+          lineInterpolation: 'linear',
+          lineWidth: 1,
+          pointSize: 5,
+          scaleDistribution: {
+            type: 'linear',
+          },
+          showPoints: 'auto',
+          spanNulls: false,
+          stacking: {
+            group: 'A',
+            mode: 'none',
+          },
+          thresholdsStyle: {
+            mode: 'off',
+          },
+        },
+        mappings: [],
+        thresholds: {
+          mode: 'absolute',
+          steps: [
+            {
+              color: 'green',
+              value: null,
+            },
+            {
+              color: 'red',
+              value: 80,
+            },
+          ],
+        },
+      },
+      overrides: [],
+    },
+    gridPos: {
+      h: 9,
+      w: 12,
+      x: 0,
+      y: 0,
+    },
+    id: 2,
+    options: {
+      legend: {
+        calcs: [],
+        displayMode: 'list',
+        placement: 'bottom',
+        showLegend: true,
+      },
+      tooltip: {
+        mode: 'single',
+        sort: 'none',
+      },
+    },
+    targets: [
+      {
+        datasource: {
+          type: 'prometheus',
+          uid: '${Datasource}',
+        },
+        editorMode: 'code',
+        expr: 'sum(irate(kubevirt_info{cluster="",namespace=~"$namespace"}[5m])) by (pod)',
+        legendFormat: '__auto',
+        range: true,
+        refId: 'A',
+      },
+    ],
+    title: 'Recieved Packets',
+    type: 'timeseries',
   },
-  stat: {
-    local stat = g.panel.stat,
-    local options = stat.options,
+  getAllPanels():: [
+    self.kubevirt_info(),
+  ]
 
-    base(title, targets, gridPos):
-      stat.new(title)
-      + stat.datasource.withType('prometheus')
-      + stat.datasource.withUid('$Datasource')
-      + stat.queryOptions.withTargets(targets)
-      + stat.gridPos.withX(gridPos.x)
-      + stat.gridPos.withY(gridPos.y)
-      + stat.gridPos.withH(gridPos.h)
-      + stat.gridPos.withW(gridPos.w)
-      + options.reduceOptions.withCalcs([
-        'last',
-      ]),
-  },
 }
