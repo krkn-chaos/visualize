@@ -19,7 +19,7 @@ local generateTableQuery(query) = [
 {
   vmiInfo: {
     query():
-      generateTableQuery('kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi"}'),
+      generateTableQuery('kubevirt_vmi_info{namespace=~"$namespace", name=~"virt-density"}'),
   },
 
   vmiPhaseCount: {
