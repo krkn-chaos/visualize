@@ -49,6 +49,30 @@ local queries = import 'queries.libsonnet';
         {
           matcher: {
             id: 'byName',
+            options: 'kubernetes_objects_count.Pod',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.Route',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
             options: 'kubernetes_objects_count.ConfigMap',
           },
           properties: [
