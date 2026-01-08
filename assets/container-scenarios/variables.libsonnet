@@ -53,6 +53,7 @@
     self.datasourceVariable('Alerts', 'Alerts', 'grafana-opensearch-datasource', '/.*Alerts*./'),
     self.queryVariable('platform', 'platform', '{"find": "terms", "field": "cloud_infrastructure.keyword"}', '${Datasource}'),
     self.queryVariable('cloud_type', 'cloud_type', '{"find": "terms", "field": "cloud_type.keyword", "query": "cloud_infrastructure.keyword: $platform"}', '${Datasource}'),
+    self.queryVariable('namespace', 'namespace', '{"find": "terms", "field": "scenarios.parameters.namespace.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type AND scenarios.scenario: /tmp/container_scenario.yaml"}', '${Datasource}', true, true),
     self.queryVariable('networkType', 'networkType', '{"find": "terms", "field": "network_plugins.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),
     self.queryVariable('node_count', 'node_count', '{"find": "terms", "field": "node_summary_infos.count",  "query": "cloud_infrastructure.keyword: $platform AND scenarios.scenario: /tmp/container_scenario.yaml AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),
     self.queryVariable('major_version', 'major_version', '{"find": "terms", "field": "major_version.keyword",  "query": "cloud_infrastructure.keyword: $platform AND network_plugins.keyword: $networkType AND scenarios.scenario: /tmp/container_scenario.yaml AND cloud_type.keyword: $cloud_type" }', '${Datasource}', true, true),
