@@ -42,6 +42,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -53,6 +54,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -64,6 +66,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -75,6 +78,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -86,6 +90,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -97,6 +102,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -396,7 +402,7 @@ local queries = import 'queries.libsonnet';
     },
     gridPos: {
       h: 8,
-      w: 12,
+      w: 24,
       x: 0,
       y: 19,
     },
@@ -416,8 +422,7 @@ local queries = import 'queries.libsonnet';
     pluginVersion: '10.4.0',
     // Enable repeat by namespace variable
     repeat: 'namespace',
-    repeatDirection: 'h',
-    maxPerRow: 2,
+    repeatDirection: 'v',
     targets: [
       {
         alias: '',

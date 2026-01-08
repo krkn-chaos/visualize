@@ -43,6 +43,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -54,6 +55,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -65,6 +67,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -76,6 +79,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -87,6 +91,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -98,6 +103,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
