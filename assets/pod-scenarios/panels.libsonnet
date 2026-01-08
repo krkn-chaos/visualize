@@ -33,72 +33,74 @@ local queries = import 'queries.libsonnet';
           ],
         },
       },
-      overrides: [{
-            "matcher": {
-              "id": "byName",
-              "options": "kubernetes_objects_count.Deployment"
-            },
-            "properties": [
-              {
-                 "id": "custom.hidden"
-              }
-            ]
+      overrides: [
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.Deployment',
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "kubernetes_objects_count.ConfigMap"
+          properties: [
+            {
+              id: 'custom.hidden',
             },
-            "properties": [
-              {
-                 "id": "custom.hidden"
-              }
-            ]
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.ConfigMap',
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "kubernetes_objects_count.Build"
+          properties: [
+            {
+              id: 'custom.hidden',
             },
-            "properties": [
-              {
-                "id": "custom.hidden"
-              }
-            ]
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.Build',
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "_type"
+          properties: [
+            {
+              id: 'custom.hidden',
             },
-            "properties": [
-              {
-                 "id": "custom.hidden"
-              }
-            ]
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: '_type',
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "kubernetes_objects"
+          properties: [
+            {
+              id: 'custom.hidden',
             },
-            "properties": [
-              {
-                 "id": "custom.hidden"
-              }
-            ]
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects',
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "_id"
+          properties: [
+            {
+              id: 'custom.hidden',
             },
-            "properties": [
-              {
-                "id": "custom.hidden"
-              }
-            ]
-          }],
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: '_id',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+            },
+          ],
+        },
+      ],
     },
     gridPos: { h: 10, w: 24, x: 0, y: 1 },
     id: 2,
