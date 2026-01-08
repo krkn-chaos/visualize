@@ -247,6 +247,72 @@ local queries = import 'queries.libsonnet';
         },
       },
       overrides: [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kubernetes_objects_count.Deployment"
+            },
+            "properties": [
+              {
+                 "id": "custom.hidden"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kubernetes_objects_count.ConfigMap"
+            },
+            "properties": [
+              {
+                 "id": "custom.hidden"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kubernetes_objects_count.Build"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_type"
+            },
+            "properties": [
+              {
+                 "id": "custom.hidden"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kubernetes_objects"
+            },
+            "properties": [
+              {
+                 "id": "custom.hidden"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden"
+              }
+            ]
+          },
         {
           matcher: {
             id: 'byName',
@@ -472,7 +538,7 @@ local queries = import 'queries.libsonnet';
             type: 'raw_data',
           },
         ],
-        query: 'run_uuid.keyword: $run_uuid AND type.keyword: unrecovered AND metricName.keyword: affected_pods_recovery AND namespace.keyword: openshift-etcd',
+        query: 'run_uuid.keyword: $run_uuid AND type.keyword: unrecovered AND metricName.keyword: affected_pods_recovery AND namespace.keyword: $namespace',
         refId: 'A',
         timeField: 'timestamp',
       },
