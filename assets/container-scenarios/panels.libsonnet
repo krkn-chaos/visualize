@@ -69,6 +69,8 @@ local queries = import 'queries.libsonnet';
     type: 'table',
   },
 
+  // Container recovery time panel with namespace repeat support
+  // When multiple namespaces are selected, creates one panel per namespace
   etcdRecoveryTime():: {
     datasource: {
       type: 'grafana-opensearch-datasource',
@@ -131,8 +133,8 @@ local queries = import 'queries.libsonnet';
     },
     gridPos: {
       h: 8,
-      w: 24,
-      x: 12,
+      w: 12,
+      x: 0,
       y: 27,
     },
     id: 3,
@@ -149,6 +151,10 @@ local queries = import 'queries.libsonnet';
       },
     },
     pluginVersion: '10.4.0',
+    // Enable repeat by namespace variable
+    repeat: 'namespace',
+    repeatDirection: 'h',
+    maxPerRow: 2,
     targets: [
       {
         alias: '',
