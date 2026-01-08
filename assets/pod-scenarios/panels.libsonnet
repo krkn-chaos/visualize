@@ -42,6 +42,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -53,6 +54,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -64,6 +66,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -75,6 +78,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -86,6 +90,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -97,6 +102,7 @@ local queries = import 'queries.libsonnet';
           properties: [
             {
               id: 'custom.hidden',
+              value: true,
             },
           ],
         },
@@ -137,7 +143,8 @@ local queries = import 'queries.libsonnet';
   },
 
 
-  podRecoveryTime():: {
+  // Helper function to create a podRecoveryTime panel for a specific namespace
+  podRecoveryTimePanel(namespaceVar='$namespace', panelId=1, gridX=0, gridY=19, width=12):: {
     datasource: {
       type: 'grafana-opensearch-datasource',
       uid: '${Datasource}',
@@ -223,11 +230,11 @@ local queries = import 'queries.libsonnet';
     },
     gridPos: {
       h: 8,
-      w: 12,
-      x: 0,
-      y: 19,
+      w: width,
+      x: gridX,
+      y: gridY,
     },
-    id: 1,
+    id: panelId,
     options: {
       legend: {
         calcs: [],
@@ -297,12 +304,187 @@ local queries = import 'queries.libsonnet';
             type: 'extended_stats',
           },
         ],
+        query: 'run_uuid.keyword: $run_uuid AND scenarios.parameters.config.namespace_pattern: ' + namespaceVar,
+        refId: 'A',
+        timeField: 'timestamp',
+      },
+    ],
+    title: 'Pod Recovery Time - ' + namespaceVar,
+    type: 'timeseries',
+  },
+
+  // Main function to generate podRecoveryTime panels
+  // When multiple namespaces are selected, creates one panel per namespace
+  podRecoveryTime():: {
+    // This is a repeat panel that will be duplicated for each namespace value
+    datasource: {
+      type: 'grafana-opensearch-datasource',
+      uid: '${Datasource}',
+    },
+    fieldConfig: {
+      defaults: {
+        color: {
+          mode: 'palette-classic',
+        },
+        custom: {
+          axisBorderShow: false,
+          axisCenteredZero: false,
+          axisColorMode: 'text',
+          axisLabel: '',
+          axisPlacement: 'auto',
+          barAlignment: 0,
+          drawStyle: 'line',
+          fillOpacity: 0,
+          gradientMode: 'none',
+          hideFrom: {
+            legend: false,
+            tooltip: false,
+            viz: false,
+          },
+          insertNulls: false,
+          lineInterpolation: 'linear',
+          lineWidth: 1,
+          pointSize: 5,
+          scaleDistribution: {
+            type: 'linear',
+          },
+          showPoints: 'auto',
+          spanNulls: false,
+          stacking: {
+            group: 'A',
+            mode: 'none',
+          },
+          thresholdsStyle: {
+            mode: 'off',
+          },
+        },
+        mappings: [],
+        thresholds: {
+          mode: 'absolute',
+          steps: [
+            {
+              color: 'green',
+              value: null,
+            },
+            {
+              color: 'red',
+              value: 80,
+            },
+          ],
+        },
+        unit: 'short',
+      },
+      overrides: [
+        {
+          __systemRef: 'hideSeriesFrom',
+          matcher: {
+            id: 'byNames',
+            options: {
+              mode: 'exclude',
+              names: [
+              ],
+              prefix: 'All except:',
+              readOnly: true,
+            },
+          },
+          properties: [
+            {
+              id: 'custom.hideFrom',
+              value: {
+                legend: false,
+                tooltip: false,
+                viz: true,
+              },
+            },
+          ],
+        },
+      ],
+    },
+    gridPos: {
+      h: 8,
+      w: 24,
+      x: 0,
+      y: 19,
+    },
+    id: 1,
+    options: {
+      legend: {
+        calcs: [],
+        displayMode: 'list',
+        placement: 'bottom',
+        showLegend: true,
+      },
+      tooltip: {
+        mode: 'single',
+        sort: 'none',
+      },
+    },
+    pluginVersion: '10.4.0',
+    // Enable repeat by namespace variable
+    repeat: 'namespace',
+    repeatDirection: 'v',
+    targets: [
+      {
+        alias: '',
+        bucketAggs: [
+          {
+            field: 'cluster_version.keyword',
+            id: '6',
+            settings: {
+              min_doc_count: '1',
+              order: 'desc',
+              orderBy: '_term',
+              size: '0',
+            },
+            type: 'terms',
+          },
+          {
+            field: 'run_uuid.keyword',
+            id: '7',
+            settings: {
+              min_doc_count: '1',
+              order: 'desc',
+              orderBy: '_term',
+              size: '10',
+            },
+            type: 'terms',
+          },
+          {
+            field: 'timestamp',
+            id: '3',
+            settings: {
+              interval: 'auto',
+              min_doc_count: '0',
+              timeZone: 'utc',
+              trimEdges: '0',
+            },
+            type: 'date_histogram',
+          },
+        ],
+        datasource: {
+          type: 'grafana-opensearch-datasource',
+          uid: '${Datasource}',
+        },
+        metrics: [
+          {
+            field: 'scenarios.affected_pods.recovered.total_recovery_time',
+            id: '1',
+            meta: {
+              avg: true,
+              min: false,
+              std_deviation_bounds_lower: false,
+              std_deviation_bounds_upper: false,
+            },
+            settings: {},
+            type: 'extended_stats',
+          },
+        ],
         query: 'run_uuid.keyword: $run_uuid AND scenarios.parameters.config.namespace_pattern: $namespace',
         refId: 'A',
         timeField: 'timestamp',
       },
     ],
-    title: 'Openshift Monitoring Recovery Time',
+    title: 'Pod Recovery Time - $namespace',
     type: 'timeseries',
   },
 

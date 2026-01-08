@@ -33,7 +33,80 @@ local queries = import 'queries.libsonnet';
           ],
         },
       },
-      overrides: [],
+      overrides: [
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.Deployment',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.ConfigMap',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects_count.Build',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: '_type',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: 'kubernetes_objects',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+        {
+          matcher: {
+            id: 'byName',
+            options: '_id',
+          },
+          properties: [
+            {
+              id: 'custom.hidden',
+              value: true,
+            },
+          ],
+        },
+      ],
     },
     gridPos: { h: 10, w: 24, x: 0, y: 1 },
     id: 2,
