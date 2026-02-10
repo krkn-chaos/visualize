@@ -4,7 +4,7 @@ local variables = import '../../assets/node-scenarios/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Node Scenarios - Chaos Engineering',
+  description: 'Node Scenarios - Chaos Engineering (node_scenarios)',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Manual Node Chaos Engineering',
+  title: 'Node Scenarios - Chaos Engineering (node_scenarios)',
   uid: null,
   version: 1,
   weekStart: '',

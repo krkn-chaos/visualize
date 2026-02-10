@@ -4,7 +4,7 @@ local variables = import '../../assets/pod-scenarios/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Pod Scenarios - Chaos Engineering',
+  description: 'Pod Scenarios - Chaos Engineering (pod_disruption_scenarios)',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Pod Scenarios - Chaos Engineering',
+  title: 'Pod Scenarios - Chaos Engineering (pod_disruption_scenarios)',
   uid: null,
   version: 1,
   weekStart: '',

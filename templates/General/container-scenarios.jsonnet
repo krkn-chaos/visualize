@@ -4,7 +4,7 @@ local variables = import '../../assets/container-scenarios/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Containers Scenarios - Chaos Engineering',
+  description: 'Containers Scenarios - Chaos Engineering (container_scenarios)',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Container Scenarios - Chaos Engineering',
+  title: 'Container Scenarios - Chaos Engineering (container_scenarios)',
   uid: null,
   version: 1,
   weekStart: '',

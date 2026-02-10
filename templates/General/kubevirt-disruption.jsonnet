@@ -4,7 +4,7 @@ local variables = import '../../assets/kubevirt-disruption/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Manual Test Kubevirt Disruption - Chaos Engineering',
+  description: 'Kubevirt Disruption - Chaos Engineering (kubevirt_vm_outage)',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Kubevirt Disruption - Chaos Engineering',
+  title: 'Kubevirt Disruption - Chaos Engineering (kubevirt_vm_outage)',
   uid: null,
   version: 1,
   weekStart: '',
