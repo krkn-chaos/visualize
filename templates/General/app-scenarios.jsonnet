@@ -4,7 +4,7 @@ local variables = import '../../assets/console-outage/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Application Outage Scenarios - Chaos Engineering',
+  description: 'Application Outage Scenarios - Chaos Engineering (application_outages_scenario)',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Manual App Outage Chaos Engineering',
+  title: 'Application Outage Chaos Engineering (application_outages_scenario)',
   uid: null,
   version: 1,
   weekStart: '',
