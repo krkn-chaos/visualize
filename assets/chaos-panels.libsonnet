@@ -1,5 +1,78 @@
+local commonOverrides = [
+  { matcher: { id: 'byName', options: '_type' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: '_id' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: '_index' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: 'kubernetes_objects' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: 'kubernetes_objects_count.Deployment' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: 'kubernetes_objects_count.ConfigMap' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: 'kubernetes_objects_count.Build' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: 'kubernetes_objects_count.Pod' }, properties: [{ id: 'custom.hidden', value: true }] },
+  { matcher: { id: 'byName', options: 'kubernetes_objects_count.Route' }, properties: [{ id: 'custom.hidden', value: true }] },
+];
+
 {
-    scenarioAlerts():: {
+  scenarioDetailsRow():: {
+    collapsed: false,
+    gridPos: { h: 1, w: 24, x: 0, y: 0 },
+    id: 20,
+    panels: [],
+    title: 'Scenario Details',
+    type: 'row',
+  },
+
+  scenarioUuidDetails(title, query):: {
+    datasource: { type: 'grafana-opensearch-datasource', uid: '${Datasource}' },
+    fieldConfig: {
+      defaults: {
+        color: { mode: 'thresholds' },
+        custom: { align: 'auto', cellOptions: { type: 'auto' }, inspect: false },
+        mappings: [],
+        thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }, { color: 'red', value: 80 }] },
+      },
+      overrides: commonOverrides,
+    },
+    gridPos: { h: 10, w: 24, x: 0, y: 1 },
+    id: 1,
+    options: {
+      cellHeight: 'sm',
+      footer: { countRows: false, fields: '', reducer: ['sum'], show: false },
+      frameIndex: 1,
+      showHeader: true,
+      sortBy: [{ desc: true, displayName: 'scenarios' }],
+    },
+    pluginVersion: '10.4.0',
+    targets: [{
+      alias: '',
+      bucketAggs: [],
+      datasource: { type: 'grafana-opensearch-datasource', uid: '${Datasource}' },
+      metrics: [{ id: '1', settings: { size: '500' }, type: 'raw_data' }],
+      query: query,
+      refId: 'A',
+      timeField: 'timestamp',
+    }],
+    title: title,
+    type: 'table',
+  },
+
+  telemetryRow(y, id):: {
+    collapsed: false,
+    gridPos: { h: 1, w: 24, x: 0, y: y },
+    id: id,
+    panels: [],
+    title: 'Cluster Telemetry',
+    type: 'row',
+  },
+
+  alertsRow():: {
+    collapsed: false,
+    gridPos: { h: 1, w: 24, x: 0, y: 11 },
+    id: 21,
+    panels: [],
+    title: 'Alerts',
+    type: 'row',
+  },
+
+  scenarioAlerts():: {
     datasource: {
       type: 'grafana-opensearch-datasource',
       uid: '${Alerts}',
