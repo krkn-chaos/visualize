@@ -23,7 +23,7 @@
 #   ./deploy.sh -d                    # Delete deployment and namespace
 # ------------------------------------------------------------------------------
 
-set -e
+set -euo pipefail
 
 function _usage {
   cat <<END
@@ -63,14 +63,11 @@ export PROMETHEUS_USER=internal
 export GRAFANA_ADMIN_PASSWORD=admin
 export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
-
-export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
-
 export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:opensearch-latest"} # Syncer image
 export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"grafana/grafana:10.4.0"} # Grafana image
 export GRAFANA_RENDERER_IMAGE=${GRAFANA_RENDERER_IMAGE:-"grafana/grafana-image-renderer:latest"} # Grafana renderer image
 
-namespace_file="$(dirname $(realpath ${BASH_SOURCE[0]}))/templates/krkn_visualize_ns.yaml.template"
+namespace_file="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/templates/krkn_visualize_ns.yaml.template"
 
 # Set defaults for command options
 k8s_cmd='kubectl'
@@ -117,19 +114,38 @@ while getopts ":c:m:n:p:i:dh" opt; do
   esac
 done
 
+# Validate required tools
+if ! command -v "$k8s_cmd" &>/dev/null; then
+  echo -e "\033[31mERROR: '${k8s_cmd}' command not found. Please install it before running this script.\033[0m" >&2
+  exit 1
+fi
+if ! command -v envsubst &>/dev/null; then
+  echo -e "\033[31mERROR: 'envsubst' command not found. Please install gettext.\033[0m" >&2
+  exit 1
+fi
+
 # Other vars
 if [[ $k8s_cmd == "oc" ]]; then
   export deploy_template="templates/krkn_visualize_oc.yaml.template"
 else
   export deploy_template="templates/krkn-visualize.yaml.template"
-fi 
+fi
 
-echo "Dash imports ${dash_import[@]}"
-python -m pip install pyfiglet
-python -c "import pyfiglet; print(pyfiglet.figlet_format('krkn visualize'))"
+# Validate template files exist
+if [[ ! -f "${namespace_file}" ]]; then
+  echo -e "\033[31mERROR: Namespace template not found: ${namespace_file}\033[0m" >&2
+  exit 1
+fi
+if [[ ! -f "${deploy_template}" ]]; then
+  echo -e "\033[31mERROR: Deploy template not found: ${deploy_template}\033[0m" >&2
+  exit 1
+fi
+
+python -m pip install pyfiglet --quiet || echo "Warning: pyfiglet install failed, skipping banner."
+python -c "import pyfiglet; print(pyfiglet.figlet_format('krkn visualize'))" 2>/dev/null || true
 echo "Using k8s command: $k8s_cmd"
 echo "Using namespace: $namespace"
-if [[ ${grafana_default_pass} ]]; then
+if [[ "${grafana_default_pass}" == "True" ]]; then
   echo "Using default grafana password: ${GRAFANA_ADMIN_PASSWORD}"
 else
   echo "Using custom grafana password."
@@ -139,19 +155,38 @@ fi
 # Get environment values
 echo ""
 echo -e "\033[32mGetting environment vars...\033[0m"
-if [[ -n ${PROMETHEUS_URL} ]]; then
-  export PROMETHEUS_URL=${PROMETHEUS_URL:-""}
-  export PROMETHEUS_BEARER=${PROMETHEUS_BEARER:-""}
+if [[ -n "${PROMETHEUS_URL:-}" ]]; then
+  export PROMETHEUS_URL="${PROMETHEUS_URL}"
+  export PROMETHEUS_BEARER="${PROMETHEUS_BEARER:-}"
 elif [[ $k8s_cmd == "oc" ]]; then
-  echo "oc" 
+  echo "Fetching Prometheus token via oc..."
   export PROMETHEUS_URL="https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091"
-  export PROMETHEUS_BEARER=$($k8s_cmd create token -n openshift-monitoring prometheus-k8s --duration 240h || $k8s_cmd sa get-token -n openshift-monitoring prometheus-k8s || $k8s_cmd sa new-token -n openshift-monitoring prometheus-k8s)
+  export PROMETHEUS_BEARER
+  PROMETHEUS_BEARER=$("$k8s_cmd" create token -n openshift-monitoring prometheus-k8s --duration 240h 2>/dev/null \
+    || "$k8s_cmd" sa get-token -n openshift-monitoring prometheus-k8s 2>/dev/null \
+    || "$k8s_cmd" sa new-token -n openshift-monitoring prometheus-k8s 2>/dev/null \
+    || true)
+  if [[ -z "${PROMETHEUS_BEARER}" ]]; then
+    echo -e "\033[31mWARNING: Could not obtain Prometheus bearer token. Prometheus datasource may not work.\033[0m" >&2
+  fi
 else
-  prometheus_ns=$($k8s_cmd get ns | grep monitoring | awk '{print $1}')
-  pod_name="prometheus-operated"
-  export PROMETHEUS_URL=http://$($k8s_cmd get endpoints -n $prometheus_ns $pod_name -o jsonpath="{.subsets[0].addresses[0].ip}"):$($k8s_cmd get endpoints -n $prometheus_ns $pod_name -o jsonpath="{.subsets[0].ports[0].port}")
-fi 
-echo "Prometheus URL is: ${PROMETHEUS_URL}"
+  prometheus_ns=$("$k8s_cmd" get ns | grep monitoring | awk '{print $1}' || true)
+  if [[ -z "${prometheus_ns}" ]]; then
+    echo -e "\033[31mWARNING: Could not find a monitoring namespace. Prometheus datasource may not be configured.\033[0m" >&2
+    export PROMETHEUS_URL=""
+  else
+    pod_name="prometheus-operated"
+    prom_ip=$("$k8s_cmd" get endpoints -n "$prometheus_ns" "$pod_name" -o jsonpath="{.subsets[0].addresses[0].ip}" 2>/dev/null || true)
+    prom_port=$("$k8s_cmd" get endpoints -n "$prometheus_ns" "$pod_name" -o jsonpath="{.subsets[0].ports[0].port}" 2>/dev/null || true)
+    if [[ -z "${prom_ip}" ]] || [[ -z "${prom_port}" ]]; then
+      echo -e "\033[31mWARNING: Could not resolve Prometheus endpoint in namespace '${prometheus_ns}'.\033[0m" >&2
+      export PROMETHEUS_URL=""
+    else
+      export PROMETHEUS_URL="http://${prom_ip}:${prom_port}"
+    fi
+  fi
+fi
+echo "Prometheus URL is: ${PROMETHEUS_URL:-<not set>}"
 
 function namespace() {
   # Create namespace
@@ -198,17 +233,31 @@ else
   echo -e "\033[32mDeploying Grafana...\033[0m"
   grafana "apply"
   if [[ $k8s_cmd != "oc" ]]; then
-    echo "Port forward to 3000"
-    $k8s_cmd -n $namespace port-forward service/krkn-visualize 3000 &
+    echo "Port forwarding to localhost:3000..."
+    "$k8s_cmd" -n "$namespace" port-forward service/krkn-visualize 3000 &
+    pf_pid=$!
     visualize_route="localhost:3000"
+    # Wait for port-forward to be ready
+    max_wait=30
+    elapsed=0
+    until curl -sf "http://admin:${GRAFANA_ADMIN_PASSWORD}@${visualize_route}/api/health" -o /dev/null 2>/dev/null; do
+      if [[ $elapsed -ge $max_wait ]]; then
+        echo -e "\033[31mERROR: Grafana did not become reachable on ${visualize_route} within ${max_wait}s.\033[0m" >&2
+        kill "$pf_pid" 2>/dev/null || true
+        exit 1
+      fi
+      sleep 2
+      ((elapsed+=2))
+    done
   else
-    echo "Getting route for oc"
-    visualize_route=$($k8s_cmd -n $namespace get route krkn-visualize -o jsonpath="{.spec.host}")
-  fi 
-  
-  # Ugly, but need to slow things down when opening the port-forward
-  sleep 10
-  echo "visualize route $visualize_route"
+    echo "Getting route for oc..."
+    visualize_route=$("$k8s_cmd" -n "$namespace" get route krkn-visualize -o jsonpath="{.spec.host}" 2>/dev/null || true)
+    if [[ -z "${visualize_route}" ]]; then
+      echo -e "\033[31mERROR: Could not retrieve route for krkn-visualize in namespace '${namespace}'.\033[0m" >&2
+      exit 1
+    fi
+  fi
 
+  echo "visualize route: $visualize_route"
   echo "You can access the Grafana instance at http://${visualize_route}"
 fi
