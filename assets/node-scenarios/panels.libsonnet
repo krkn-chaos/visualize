@@ -711,6 +711,7 @@ local queries = import 'queries.libsonnet';
     self.notReadyRecoveryTime(),
     self.runningRecoveryTime(),
     self.stoppedRecoveryTime(),
+    chaos_panels.consoleHealthCheck(35),
     chaos_panels.scenarioAlerts(),
     panels.etcd99thWalFsyncLatency(),
     panels.etcd99thRoundTripTime(),

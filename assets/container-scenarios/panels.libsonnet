@@ -655,6 +655,7 @@ local queries = import 'queries.libsonnet';
     self.containerScenarioUuidDetails(),
     self.unrecoveredContainers(),
     self.etcdRecoveryTime(),
+    chaos_panels.consoleHealthCheck(43),
     chaos_panels.scenarioAlerts(),
     panels.etcd99thWalFsyncLatency(),
     panels.etcd99thRoundTripTime(),
