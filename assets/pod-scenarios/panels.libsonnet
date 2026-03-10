@@ -783,6 +783,7 @@ local queries = import 'queries.libsonnet';
     self.scenarioDetailsRow(),
     self.podScenarioUuidDetails(),
     self.podRecoveryTime(),
+    chaos_panels.consoleHealthCheck(27),
     chaos_panels.scenarioAlerts(),
     panels.etcd99thWalFsyncLatency(),
     panels.etcd99thRoundTripTime(),
