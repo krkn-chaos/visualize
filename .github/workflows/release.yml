@@ -26,7 +26,10 @@ jobs:
 
     - name: Build & push syncer image
       run: make build-syncer-image push-syncer-image
-    
+
+    - name: Build & push krkn-visualize deploy image
+      run: make build-deploy-image push-deploy-image
+
     - name: Upload CI logs
       uses: actions/upload-artifact@v4
       with:

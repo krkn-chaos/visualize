@@ -1,0 +1,73 @@
+# Dockerfile.deploy
+# Runs krkn-visualize/deploy.sh against a running Kubernetes/OpenShift cluster.
+#
+# Environment variables (all optional):
+#   K8S_CMD            - k8s CLI to use: 'kubectl' or 'oc'  (default: kubectl)
+#   GRAFANA_PASSWORD   - Grafana admin password              (default: admin)
+#   DELETE             - set to 'true' to delete deployment  (default: false)
+#   PROMETHEUS_URL     - Prometheus URL for datasource       (auto-detected if unset)
+#   PROMETHEUS_BEARER  - Bearer token for Prometheus         (auto-fetched via oc if unset)
+#   ES_URL             - Elasticsearch URL for datasource    (default: empty)
+#   ES_USERNAME        - Elasticsearch username              (default: empty)
+#   ES_PASSWORD        - Elasticsearch password              (default: empty)
+#   NAMESPACE          - Kubernetes namespace to deploy into     (default: krkn-visualize)
+#   KUBECONFIG         - path to kubeconfig inside the container (default: /root/.kube/config)
+#
+# Kubeconfig options (pick one):
+#   1. Mount to the default location:
+#        -v /path/to/your/kubeconfig:/root/.kube/config:ro
+#   2. Mount to a custom location and point KUBECONFIG at it:
+#        -v /path/to/your/kubeconfig:/kubeconfig:ro -e KUBECONFIG=/kubeconfig
+#   3. Mount an entire .kube directory:
+#        -v ~/.kube:/root/.kube:ro
+#
+# Example:
+#   docker run --rm \
+#     -e K8S_CMD=oc \
+#     -e GRAFANA_PASSWORD=secret \
+#     -e KUBECONFIG=/kubeconfig \
+#     -v /path/to/my/kubeconfig:/kubeconfig:ro \
+#     krkn-visualize
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+
+# TARGETARCH is set automatically by buildkit (amd64 or arm64)
+ARG TARGETARCH=amd64
+ARG OC_VERSION=stable
+
+WORKDIR /visualize
+
+USER root
+
+# Install Python 3, pip, gettext (for envsubst), tar+gzip (to extract oc)
+# curl-minimal is pre-installed in ubi-minimal and provides the curl command
+RUN microdnf install -y python3 python3-pip gettext tar gzip && \
+    microdnf clean all
+
+# Download oc (and kubectl) for the target architecture from the OpenShift mirror
+RUN ARCH=${TARGETARCH} && \
+    if [ "${ARCH}" = "amd64" ]; then ARCH=""; else ARCH="-${ARCH}"; fi && \
+    curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux${ARCH}.tar.gz" \
+      | tar xz -C /usr/local/bin oc kubectl && \
+    chmod +x /usr/local/bin/oc /usr/local/bin/kubectl
+
+# Install Python dependencies (pyfiglet for the banner, others from requirements.txt)
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir -r requirements.txt pyfiglet
+
+# Copy the krkn-visualize scripts
+COPY krkn-visualize/ krkn-visualize/
+COPY entrypoint-deploy.sh /entrypoint.sh
+
+RUN chmod +x krkn-visualize/deploy.sh krkn-visualize/import.sh /entrypoint.sh
+
+# Default env vars (mirrors deploy.sh defaults)
+# KUBECONFIG is respected natively by both kubectl and oc
+ENV K8S_CMD=kubectl \
+    GRAFANA_PASSWORD=admin \
+    DELETE=false \
+    NAMESPACE=krkn-visualize \
+    KUBECONFIG=/root/.kube/config
+
+ENTRYPOINT ["/entrypoint.sh"]
