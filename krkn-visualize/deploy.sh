@@ -13,13 +13,15 @@
 #   -p <grafana_pass> : The (p)assword to configure for the Grafana admin user
 #                       (defaults to 'admin')
 #   -d                : (D)elete an existing deployment (namespace and Grafana)
-#   -t <prometheus_url> : The (t)prometheus url to use for the Prometheus datasource
-#   -b <prometheus_bearer_token> : The (b)earer token to use for the Prometheus datasource
 #   -h                : Show this help message and exit
+#
+# Environment Variables:
+#   PROMETHEUS_URL    : Prometheus URL for datasource (auto-detected if unset)
+#   PROMETHEUS_BEARER : Bearer token for Prometheus (auto-fetched via oc if unset)
 #
 # Example Usage:
 #   ./deploy.sh                       # Deploy Grafana in 'krkn-visualize' namespace with default password
-#   ./deploy.sh -n myns -p secret     # Deploy in 'myns' namespace with custom password
+#   ./deploy.sh -p secret     # Deploy in 'myns' namespace with custom password
 #   ./deploy.sh -d                    # Delete deployment and namespace
 # ------------------------------------------------------------------------------
 
@@ -38,17 +40,9 @@ Usage: $(basename "${0}") [-c <kubectl_cmd>] [-n <namespace>] [-p <grafana_pwd>]
        $(basename "${0}") [-d] [-n <namespace>]
 
   -c <kubectl_cmd>  : The (c)ommand to use for k8s admin (defaults to 'kubectl' for now)
-
-  -n <namespace>    : The (n)amespace in which to deploy the Grafana instance
-                      (defaults to 'krkn-visualize')
-
+  
   -p <grafana_pass> : The (p)assword to configure for the Grafana admin user
                       (defaults to 'admin')
-
-  -t <prometheus_url> : The (t)prometheus url to use for the Prometheus datasource
-
-  -b <prometheus_bearer_token> : The (b)earer token to use for the Prometheus datasource
-                      (defaults to '')
 
   -d                : (D)elete an existing deployment
 
@@ -61,19 +55,22 @@ END
 
 export PROMETHEUS_USER=internal
 export GRAFANA_ADMIN_PASSWORD=admin
-export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
 export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:opensearch-latest"} # Syncer image
 export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"grafana/grafana:10.4.0"} # Grafana image
 export GRAFANA_RENDERER_IMAGE=${GRAFANA_RENDERER_IMAGE:-"grafana/grafana-image-renderer:latest"} # Grafana renderer image
 
+export ES_URL=${ES_URL:-""}
+export ES_USERNAME=${ES_USERNAME:-""}
+export ES_PASSWORD=${ES_PASSWORD:-""}
+
 namespace_file="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/templates/krkn_visualize_ns.yaml.template"
 
 # Set defaults for command options
 k8s_cmd='kubectl'
-namespace='krkn-visualize'
+namespace=${NAMESPACE:-'krkn-visualize'}
 grafana_default_pass=True
-
+delete=''
 
 # Capture and act on command options
 while getopts ":c:m:n:p:i:dh" opt; do
@@ -91,12 +88,6 @@ while getopts ":c:m:n:p:i:dh" opt; do
     d)
       delete=True
       ;;
-    t)
-      export PROMETHEUS_URL=${OPTARG}
-      ;;
-    b)
-      export PROMETHEUS_BEARER=${OPTARG}
-      ;;
     h)
       _usage
       exit 1
@@ -113,6 +104,9 @@ while getopts ":c:m:n:p:i:dh" opt; do
       ;;
   esac
 done
+
+# Compute GRAFANA_URL after -p is parsed so it uses the correct password
+export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
 # Validate required tools
 if ! command -v "$k8s_cmd" &>/dev/null; then
@@ -187,6 +181,9 @@ else
   fi
 fi
 echo "Prometheus URL is: ${PROMETHEUS_URL:-<not set>}"
+echo "ES URL is: ${ES_URL:-<not set>}"
+echo "ES Username is: ${ES_USERNAME:-<not set>}"
+if [[ -n "${ES_PASSWORD}" ]]; then echo "ES Password is: <set>"; else echo "ES Password is: <not set>"; fi
 
 function namespace() {
   # Create namespace

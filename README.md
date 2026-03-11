@@ -108,6 +108,93 @@ You'll need to create 3 data sources connecting to krkn-telemetry, krkn-metrics 
 3. Create jsonnet file under General or if its specific to kubernetes, k8s
 4. Run `make`
 
+## Running via Docker (Dockerfile.deploy)
+
+`Dockerfile.deploy` packages `deploy.sh` into a container image, letting you deploy Grafana without installing any local dependencies. All `deploy.sh` CLI options are exposed as environment variables.
+
+### Build the image
+
+```sh
+# Run `make build` first to generate the rendered dashboards, then build the image
+make build
+make build-deploy-image
+```
+
+### Environment variables
+
+| Variable | deploy.sh flag | Default |
+|---|---|---|
+| `K8S_CMD` | `-c` | `kubectl` |
+| `GRAFANA_PASSWORD` | `-p` | `admin` |
+| `NAMESPACE` | `-n` | `krkn-visualize` |
+| `DELETE` | `-d` | `false` |
+| `PROMETHEUS_URL` | — | auto-detected |
+| `PROMETHEUS_BEARER` | — | auto-fetched via oc |
+| `ES_URL` | — | empty |
+| `ES_USERNAME` | — | empty |
+| `ES_PASSWORD` | — | empty |
+| `KUBECONFIG` | — | `/root/.kube/config` |
+
+### Kubeconfig options
+
+Pick whichever approach fits your setup:
+
+**1. Mount to the default path (no extra env var needed):**
+```sh
+docker run --rm -e K8S_CMD=oc \
+  -v ~/.kube/config:/root/.kube/config:ro \
+  krkn-visualize
+```
+
+**2. Mount a single kubeconfig file to a custom path:**
+```sh
+docker run --rm -e K8S_CMD=oc \
+  -e KUBECONFIG=/kubeconfig \
+  -v /path/to/my/kubeconfig:/kubeconfig:ro \
+  krkn-visualize
+```
+
+**3. Mount your entire `.kube` directory (useful for multiple contexts):**
+```sh
+docker run --rm -e K8S_CMD=oc \
+  -v ~/.kube:/root/.kube:ro \
+  krkn-visualize
+```
+
+### Example usage
+
+```sh
+# Deploy on OpenShift, passing ES credentials from your local environment
+# (-e VARNAME without a value reads the variable from your shell)
+docker run --rm \
+  -e K8S_CMD=oc \
+  -e ES_URL \
+  -e ES_USERNAME \
+  -e ES_PASSWORD \
+  -v ~/.kube/config:/root/.kube/config:ro \
+  krkn-visualize
+
+# Deploy on OpenShift with a custom password
+docker run --rm \
+  -e K8S_CMD=oc \
+  -e GRAFANA_PASSWORD=secret \
+  -v ~/.kube/config:/root/.kube/config:ro \
+  krkn-visualize
+
+# Delete an existing deployment
+docker run --rm \
+  -e K8S_CMD=oc \
+  -e DELETE=true \
+  -v ~/.kube/config:/root/.kube/config:ro \
+  krkn-visualize
+
+# Deploy on vanilla Kubernetes with a custom Prometheus URL
+docker run --rm \
+  -e PROMETHEUS_URL=http://prometheus.monitoring.svc:9090 \
+  -v ~/.kube/config:/root/.kube/config:ro \
+  krkn-visualize
+```
+
 ## Import Dashboard After Grafana Creation
 Edit import file to point to newly created rendered json. Note the grafana version needs to match the grafannot listed [here](https://github.com/krkn-chaos/visualize/blob/main/templates/jsonnetfile.lock.json#L18), will hit loading errors if not 
 ```sh

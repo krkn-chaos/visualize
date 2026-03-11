@@ -10,6 +10,9 @@ ASSETS := $(wildcard assets/**/*.libsonnet)
 OUTPUTDIR = rendered
 ALLDIRS = $(BINDIR) $(OUTPUTDIR)
 SYNCER_IMG_TAG ?= quay.io/krkn-chaos/visualize-syncer:opensearch-latest
+DEPLOY_IMG_TAG ?= quay.io/krkn-chaos/krkn-visualize:latest
+DEPLOY_IMG_AMD64 = $(DEPLOY_IMG_TAG)-amd64
+DEPLOY_IMG_ARM64 = $(DEPLOY_IMG_TAG)-arm64
 PLATFORM = linux/amd64,linux/arm64
 
 # Get all templates at $(TEMPLATESDIR)
@@ -61,3 +64,12 @@ build-syncer-image: build
 
 push-syncer-image:
 	podman manifest push ${SYNCER_IMG_TAG} ${SYNCER_IMG_TAG}
+
+build-deploy-image:
+	podman build --platform=linux/amd64 -f Dockerfile.deploy -t ${DEPLOY_IMG_AMD64} .
+	podman build --platform=linux/arm64 -f Dockerfile.deploy -t ${DEPLOY_IMG_ARM64} .
+	podman manifest rm ${DEPLOY_IMG_TAG} 2>/dev/null || true
+	podman manifest create ${DEPLOY_IMG_TAG} ${DEPLOY_IMG_AMD64} ${DEPLOY_IMG_ARM64}
+
+push-deploy-image:
+	podman manifest push ${DEPLOY_IMG_TAG} ${DEPLOY_IMG_TAG}
