@@ -69,7 +69,7 @@ build-deploy-image:
 	podman build --platform=linux/amd64 -f Dockerfile.deploy -t ${DEPLOY_IMG_AMD64} .
 	podman build --platform=linux/arm64 -f Dockerfile.deploy -t ${DEPLOY_IMG_ARM64} .
 	podman manifest rm ${DEPLOY_IMG_TAG} 2>/dev/null || true
-	podman manifest create ${DEPLOY_IMG_TAG} ${DEPLOY_IMG_AMD64} ${DEPLOY_IMG_ARM64}
+	podman manifest create ${DEPLOY_IMG_TAG} containers-storage:${DEPLOY_IMG_AMD64} containers-storage:${DEPLOY_IMG_ARM64}
 
 push-deploy-image:
 	podman manifest push ${DEPLOY_IMG_TAG} ${DEPLOY_IMG_TAG}
