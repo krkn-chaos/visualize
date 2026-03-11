@@ -14,8 +14,6 @@ RUN ls
 
 RUN chmod -R 775 /visualize
 
-RUN ls rendered && ls rendered/General && cat ./rendered/General/*
-
 # Install dependencies
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install --no-cache-dir -r requirements.txt
