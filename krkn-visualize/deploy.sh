@@ -55,7 +55,6 @@ END
 
 export PROMETHEUS_USER=internal
 export GRAFANA_ADMIN_PASSWORD=admin
-export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
 export SYNCER_IMAGE=${SYNCER_IMAGE:-"quay.io/krkn-chaos/visualize-syncer:opensearch-latest"} # Syncer image
 export GRAFANA_IMAGE=${GRAFANA_IMAGE:-"grafana/grafana:10.4.0"} # Grafana image
@@ -105,6 +104,9 @@ while getopts ":c:m:n:p:i:dh" opt; do
       ;;
   esac
 done
+
+# Compute GRAFANA_URL after -p is parsed so it uses the correct password
+export GRAFANA_URL="http://admin:${GRAFANA_ADMIN_PASSWORD}@localhost:3000"
 
 # Validate required tools
 if ! command -v "$k8s_cmd" &>/dev/null; then
@@ -181,7 +183,7 @@ fi
 echo "Prometheus URL is: ${PROMETHEUS_URL:-<not set>}"
 echo "ES URL is: ${ES_URL:-<not set>}"
 echo "ES Username is: ${ES_USERNAME:-<not set>}"
-echo "ES Password is: ${ES_PASSWORD:+<set>}${ES_PASSWORD:-<not set>}"
+if [[ -n "${ES_PASSWORD}" ]]; then echo "ES Password is: <set>"; else echo "ES Password is: <not set>"; fi
 
 function namespace() {
   # Create namespace
