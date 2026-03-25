@@ -19,6 +19,22 @@
     type: 'datasource',
   },
 
+  customVariable(name, label, query, defaultValue, hide=0):: {
+    current: { selected: true, text: defaultValue, value: defaultValue },
+    hide: hide,
+    includeAll: false,
+    label: label,
+    multi: false,
+    name: name,
+    options: [
+      { selected: defaultValue == 'false', text: 'false', value: 'false' },
+      { selected: defaultValue == 'true', text: 'true', value: 'true' },
+    ],
+    query: query,
+    skipUrlSync: false,
+    type: 'custom',
+  },
+
   queryVariable(name, label, query, datasourceUid, includeAll=false, multi=false, hide=0, definition='', regex=''):: {
     current: {
       selected: false,
@@ -54,6 +70,9 @@
     self.queryVariable('network_interface', 'network_interface', '{"find": "terms", "field": "scenarios.parameters.network_interface.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type AND scenarios.scenario_type.keyword: network_chaos_scenarios"}', '${Datasource}', true, true),
     self.queryVariable('node_count', 'node_count', '{"find": "terms", "field": "node_summary_infos.count", "query": "cloud_infrastructure.keyword: $platform AND scenarios.scenario_type.keyword: network_chaos_scenarios AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),
     self.queryVariable('major_version', 'major_version', '{"find": "terms", "field": "major_version.keyword", "query": "cloud_infrastructure.keyword: $platform AND network_plugins.keyword: $networkType AND scenarios.scenario_type.keyword: network_chaos_scenarios AND cloud_type.keyword: $cloud_type"}', '${Datasource}', true, true),
-    self.queryVariable('run_uuid', 'run_uuid', '{"find": "terms", "field": "run_uuid.keyword", "query": "cloud_infrastructure.keyword: $platform AND network_plugins.keyword: $networkType AND scenarios.scenario_type.keyword: network_chaos_scenarios AND major_version.keyword: $major_version AND cloud_type.keyword: $cloud_type AND node_summary_infos.count: $node_count"}', '${Datasource}', true, true),
+    self.customVariable('fips_enabled', 'fips_enabled', 'false,true', 'false'),
+    self.customVariable('etcd_encryption_enabled', 'etcd_encryption_enabled', 'false,true', 'false'),
+    self.customVariable('ipsec_enabled', 'ipsec_enabled', 'false,true', 'false'),
+    self.queryVariable('run_uuid', 'run_uuid', '{"find": "terms", "field": "run_uuid.keyword", "query": "cloud_infrastructure.keyword: $platform AND network_plugins.keyword: $networkType AND scenarios.scenario_type.keyword: network_chaos_scenarios AND major_version.keyword: $major_version AND cloud_type.keyword: $cloud_type AND node_summary_infos.count: $node_count AND fips_enabled: $fips_enabled AND etcd_encryption_enabled: $etcd_encryption_enabled AND ipsec_enabled: $ipsec_enabled"}', '${Datasource}', true, true),
   ],
 }
