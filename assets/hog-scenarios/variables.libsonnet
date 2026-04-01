@@ -19,6 +19,22 @@
     type: 'datasource',
   },
 
+  customVariable(name, label, query, defaultValue, hide=0):: {
+    current: { selected: true, text: defaultValue, value: defaultValue },
+    hide: hide,
+    includeAll: false,
+    label: label,
+    multi: false,
+    name: name,
+    options: [
+      { selected: defaultValue == 'false', text: 'false', value: 'false' },
+      { selected: defaultValue == 'true', text: 'true', value: 'true' },
+    ],
+    query: query,
+    skipUrlSync: false,
+    type: 'custom',
+  },
+
   queryVariable(name, label, query, datasourceUid, includeAll=false, multi=false, hide=0, definition='', regex=''):: {
     current: {
       selected: false,
@@ -44,16 +60,39 @@
     type: 'query',
   },
 
-  getAllVariables():: [
-    self.datasourceVariable('Datasource', 'Datasource', 'grafana-opensearch-datasource', '/.*Telemetry*./'),
-    self.datasourceVariable('Metrics', 'Metrics', 'grafana-opensearch-datasource', '/.*Metrics*./'),
-    self.datasourceVariable('Alerts', 'Alerts', 'grafana-opensearch-datasource', '/.*Alerts*./'),
-    self.queryVariable('platform', 'platform', '{"find": "terms", "field": "cloud_infrastructure.keyword"}', '${Datasource}'),
-    self.queryVariable('cloud_type', 'cloud_type', '{"find": "terms", "field": "cloud_type.keyword", "query": "cloud_infrastructure.keyword: $platform"}', '${Datasource}'),
-    self.queryVariable('networkType', 'networkType', '{"find": "terms", "field": "network_plugins.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),
-    self.queryVariable('hog_type', 'hog_type', '{"find": "terms", "field": "scenarios.parameters.hog_type.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type AND scenarios.scenario_type.keyword: hog_scenarios"}', '${Datasource}', true, true),
-    self.queryVariable('node_count', 'node_count', '{"find": "terms", "field": "node_summary_infos.count", "query": "cloud_infrastructure.keyword: $platform AND scenarios.scenario_type.keyword: hog_scenarios AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),
-    self.queryVariable('major_version', 'major_version', '{"find": "terms", "field": "major_version.keyword", "query": "cloud_infrastructure.keyword: $platform AND network_plugins.keyword: $networkType AND scenarios.scenario_type.keyword: hog_scenarios AND cloud_type.keyword: $cloud_type"}', '${Datasource}', true, true),
-    self.queryVariable('run_uuid', 'run_uuid', '{"find": "terms", "field": "run_uuid.keyword", "query": "cloud_infrastructure.keyword: $platform AND network_plugins.keyword: $networkType AND scenarios.scenario_type.keyword: hog_scenarios AND major_version.keyword: $major_version AND cloud_type.keyword: $cloud_type AND node_summary_infos.count: $node_count"}', '${Datasource}', true, true),
-  ],
+  getAllVariables()::
+    local scenario_type = 'hog_scenarios';
+
+    local runUuidFilters = [
+      'cloud_infrastructure.keyword: $platform',
+      'cloud_type.keyword: $cloud_type',
+      'network_plugins.keyword: $networkType',
+      'scenarios.scenario_type.keyword: ' + scenario_type,
+      'major_version.keyword: $major_version',
+      'node_summary_infos.count: $node_count',
+      'tag.keyword: $tag',
+      'fips_enabled: $fips_enabled',
+      'etcd_encryption_enabled: $etcd_encryption_enabled',
+      'ipsec_enabled: $ipsec_enabled',
+      'scenarios.parameters.hog-type.keyword: $hog_type',
+    ];
+
+    local runUuidQuery = '{"find": "terms", "field": "run_uuid.keyword", "query": "' + std.join(' AND ', runUuidFilters) + '"}';
+
+    [
+      self.datasourceVariable('Datasource', 'Datasource', 'grafana-opensearch-datasource', '/.*Telemetry*./'),
+      self.datasourceVariable('Metrics', 'Metrics', 'grafana-opensearch-datasource', '/.*Metrics*./'),
+      self.datasourceVariable('Alerts', 'Alerts', 'grafana-opensearch-datasource', '/.*Alerts*./'),
+      self.queryVariable('platform', 'platform', '{"find": "terms", "field": "cloud_infrastructure.keyword"}', '${Datasource}'),
+      self.queryVariable('cloud_type', 'cloud_type', '{"find": "terms", "field": "cloud_type.keyword", "query": "cloud_infrastructure.keyword: $platform"}', '${Datasource}'),
+      self.queryVariable('tag', 'tag', '{"find": "terms", "field": "tag.keyword"}', '${Datasource}', true, false) + { current: { selected: true, text: 'All', value: '$__all' } },
+      self.queryVariable('networkType', 'networkType', '{"find": "terms", "field": "network_plugins.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type"}', '${Datasource}'),
+      self.queryVariable('hog_type', 'hog_type', '{"find": "terms", "field": "scenarios.parameters.hog-type.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type AND scenarios.scenario_type.keyword: ' + scenario_type + '"}', '${Datasource}', true, true),
+      self.queryVariable('node_count', 'node_count', '{"find": "terms", "field": "node_summary_infos.count", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type AND scenarios.scenario_type.keyword: ' + scenario_type + '"}', '${Datasource}'),
+      self.queryVariable('major_version', 'major_version', '{"find": "terms", "field": "major_version.keyword", "query": "cloud_infrastructure.keyword: $platform AND cloud_type.keyword: $cloud_type AND network_plugins.keyword: $networkType AND scenarios.scenario_type.keyword: ' + scenario_type + '"}', '${Datasource}', true, true),
+      self.customVariable('fips_enabled', 'fips_enabled', 'false,true', 'false'),
+      self.customVariable('etcd_encryption_enabled', 'etcd_encryption_enabled', 'false,true', 'false'),
+      self.customVariable('ipsec_enabled', 'ipsec_enabled', 'false,true', 'false'),
+      self.queryVariable('run_uuid', 'run_uuid', runUuidQuery, '${Datasource}', true, true),
+    ],
 }
