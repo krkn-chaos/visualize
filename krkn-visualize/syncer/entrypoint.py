@@ -28,6 +28,7 @@ class GrafanaOperations:
         :return:
         """
         self.get_all_folders()
+        self.folder_map['General'] = None  # General is Grafana's built-in root folder (folderId=None)
         for input_directory in self.input_directories:
             folder_name = os.path.basename(input_directory.rstrip('/'))
             json_files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.endswith(".json")]
@@ -68,19 +69,26 @@ class GrafanaOperations:
         }
         try:
             response = requests.post(
-                f"{self.grafana_url}/api/folders", 
+                f"{self.grafana_url}/api/folders",
                 headers=headers,
                 json={
                     "title": folder_name,
                     "uid": uid,
                 },
             )
+            if response.status_code == 400:
+                # Folder already exists — fetch its ID from the existing list
+                self.get_all_folders()
+                if folder_name in self.folder_map:
+                    return self.folder_map[folder_name]
+                raise Exception(f"Folder '{folder_name}' reported as existing but not found in folder list.")
             response_json = response.json()
-            self.folder_map[folder_name] = id
-            return response_json['id']
+            folder_id = response_json['id']
+            self.folder_map[folder_name] = folder_id
+            return folder_id
 
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Error creating folder with name:'{self.folder_name}' and uid:'{uid}'. Message: {e}")
+            raise Exception(f"Error creating folder with name:'{folder_name}' and uid:'{uid}'. Message: {e}")
 
     def read_dashboard_json(self, json_file):
         """
