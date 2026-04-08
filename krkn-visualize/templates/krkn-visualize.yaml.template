@@ -96,8 +96,8 @@ spec:
         env:
         - name: GRAFANA_URL
           value: ${GRAFANA_URL}
-        - name: INPUT_DIR
-          value: "/visualize/rendered/k8s/"
+        - name: INPUT_DIRS
+          value: "/visualize/rendered/Chaos:/visualize/rendered/k8s"
         image: ${SYNCER_IMAGE}
       volumes:
       - name: sc-grafana-config

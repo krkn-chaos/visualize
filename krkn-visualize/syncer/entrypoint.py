@@ -13,14 +13,14 @@ class GrafanaOperations:
     """
     This class is responsible for Grafana operations
     """
-    def __init__(self, grafana_url: str, input_directory: str, git_commit_hash: str):
+    def __init__(self, grafana_url: str, input_directories: list, git_commit_hash: str):
         self.logger = logging.getLogger(__name__)
         self.grafana_url = grafana_url
-        self.input_directory = input_directory
+        self.input_directories = input_directories
         self.git_commit_hash = git_commit_hash if git_commit_hash else ''
         self.dashboards = defaultdict(list)
         self.folder_map = dict()
-        
+
 
     def fetch_all_dashboards(self):
         """
@@ -28,11 +28,9 @@ class GrafanaOperations:
         :return:
         """
         self.get_all_folders()
-        self.folder_map['General'] = None
-        for root, _, files in os.walk(self.input_directory):
-            folder_name = os.path.basename(root)
-            json_files = [os.path.join(root, filename) for filename in files if filename.endswith(".json")]
-            folder_name = "General" if (folder_name == "") else folder_name
+        for input_directory in self.input_directories:
+            folder_name = os.path.basename(input_directory.rstrip('/'))
+            json_files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.endswith(".json")]
             if folder_name in self.folder_map:
                 folder_id = self.folder_map[folder_name]
             else:
@@ -129,7 +127,9 @@ class GrafanaOperations:
                     raise Exception(f"Error creating dashboard '{dashboard_json['title']}' in folder '{folder_id}'. Message: {e}")
 
 if __name__ == '__main__':
-    grafana_operations = GrafanaOperations(os.environ.get("GRAFANA_URL"), os.environ.get("INPUT_DIR"), os.environ.get("GIT_COMMIT_HASH"))
+    input_dirs_env = os.environ.get("INPUT_DIRS") or os.environ.get("INPUT_DIR")
+    input_directories = [d.strip() for d in input_dirs_env.split(":") if d.strip()]
+    grafana_operations = GrafanaOperations(os.environ.get("GRAFANA_URL"), input_directories, os.environ.get("GIT_COMMIT_HASH"))
     grafana_operations.fetch_all_dashboards()
     grafana_operations.create_dashboards()
     while True:
