@@ -58,7 +58,7 @@ local generateTableQuery(query) = [
   vmiCpuUsage: {
     query():
       generateTimeSeriesQuery(
-        '(sum(rate(kubevirt_vmi_vcpu_seconds{namespace=~"$namespace"}[$interval])) by (name, namespace) * 100) or (sum(rate(kubevirt_vmi_cpu_system_seconds{namespace=~"$namespace"}[$interval]) + rate(kubevirt_vmi_cpu_user_seconds{namespace=~"$namespace"}[$interval])) by (name, namespace) * 100)',
+        '(sum(rate(kubevirt_vmi_vcpu_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100) or (sum(rate(kubevirt_vmi_cpu_system_seconds{namespace=~"$namespace"}[$__rate_interval]) + rate(kubevirt_vmi_cpu_user_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100)',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -66,7 +66,7 @@ local generateTableQuery(query) = [
   vmiCpuSystem: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_cpu_system_seconds{namespace=~"$namespace"}[$interval])) by (name, namespace) * 100',
+        'sum(rate(kubevirt_vmi_cpu_system_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -74,7 +74,7 @@ local generateTableQuery(query) = [
   vmiCpuUser: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_cpu_user_seconds{namespace=~"$namespace"}[$interval])) by (name, namespace) * 100',
+        'sum(rate(kubevirt_vmi_cpu_user_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -108,7 +108,7 @@ local generateTableQuery(query) = [
   vmiNetworkReceiveBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_receive_bytes_total{namespace=~"$namespace"}[$interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_receive_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -116,7 +116,7 @@ local generateTableQuery(query) = [
   vmiNetworkTransmitBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_transmit_bytes_total{namespace=~"$namespace"}[$interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_transmit_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -124,7 +124,7 @@ local generateTableQuery(query) = [
   vmiNetworkReceivePackets: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_receive_packets_total{namespace=~"$namespace"}[$interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_receive_packets_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -132,7 +132,7 @@ local generateTableQuery(query) = [
   vmiNetworkTransmitPackets: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_transmit_packets_total{namespace=~"$namespace"}[$interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_transmit_packets_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -140,7 +140,7 @@ local generateTableQuery(query) = [
   vmiNetworkReceiveErrors: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_receive_errors_total{namespace=~"$namespace"}[$interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_receive_errors_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -148,7 +148,7 @@ local generateTableQuery(query) = [
   vmiNetworkTransmitErrors: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_transmit_errors_total{namespace=~"$namespace"}[$interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_transmit_errors_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -157,7 +157,7 @@ local generateTableQuery(query) = [
   vmiStorageReadBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_read_traffic_bytes_total{namespace=~"$namespace"}[$interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_read_traffic_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
@@ -165,7 +165,7 @@ local generateTableQuery(query) = [
   vmiStorageWriteBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_write_traffic_bytes_total{namespace=~"$namespace"}[$interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_write_traffic_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
@@ -173,7 +173,7 @@ local generateTableQuery(query) = [
   vmiStorageReadOps: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_iops_read_total{namespace=~"$namespace"}[$interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_iops_read_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
@@ -181,7 +181,7 @@ local generateTableQuery(query) = [
   vmiStorageWriteOps: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_iops_write_total{namespace=~"$namespace"}[$interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_iops_write_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
