@@ -59,24 +59,12 @@ local timeseriesPanel(id, title, description, query, unit='s', gridX=0, gridY=20
 };
 
 {
-  // hogMetricsRow():: {
-  //   collapsed: false,
-  //   gridPos: { h: 1, w: 24, x: 0, y: 20 },
-  //   id: 22,
-  //   panels: [],
-  //   title: 'Hog Scenario Metrics',
-  //   type: 'row',
-  // },
 
   getAllPanels():: [
     chaos_panels.scenarioDetailsRow(),
     chaos_panels.scenarioUuidDetails('Hog Scenario UUID Details', queries.hogScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    // self.hogMetricsRow(),
-    timeseriesPanel(2, 'CPU Hog Duration', 'Duration of the CPU hog fault injection per run.', queries.cpuHogDuration, 's', 0, 21, 8),
-    timeseriesPanel(3, 'Memory Hog Duration', 'Duration of the memory hog fault injection per run.', queries.memoryHogDuration, 's', 8, 21, 8),
-    timeseriesPanel(4, 'IO Hog Duration', 'Duration of the IO hog fault injection per run.', queries.ioHogDuration, 's', 16, 21, 8),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),

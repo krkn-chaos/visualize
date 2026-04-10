@@ -59,24 +59,12 @@ local timeseriesPanel(id, title, description, query, unit='ms', gridX=0, gridY=2
 };
 
 {
-  // networkMetricsRow():: {
-  //   collapsed: false,
-  //   gridPos: { h: 1, w: 24, x: 0, y: 20 },
-  //   id: 22,
-  //   panels: [],
-  //   title: 'Network Chaos Metrics',
-  //   type: 'row',
-  // },
 
   getAllPanels():: [
     chaos_panels.scenarioDetailsRow(),
     chaos_panels.scenarioUuidDetails('Network Chaos Scenario UUID Details', queries.networkChaosScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    // self.networkMetricsRow(),
-    timeseriesPanel(2, 'Network Latency Introduced', 'Injected network latency during the chaos scenario.', queries.networkLatency, 'ms', 0, 21, 8),
-    timeseriesPanel(3, 'Packet Loss Rate', 'Percentage of packets dropped during the chaos scenario.', queries.packetLoss, 'percent', 8, 21, 8),
-    timeseriesPanel(4, 'Network Bandwidth Impact', 'Available bandwidth (bytes/s) during the chaos scenario.', queries.networkBandwidth, 'Bps', 16, 21, 8),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),

@@ -59,23 +59,12 @@ local timeseriesPanel(id, title, description, query, unit='ms', gridX=0, gridY=2
 };
 
 {
-  //podNetworkMetricsRow():: {
-  //  collapsed: false,
-  //  gridPos: { h: 1, w: 24, x: 0, y: 20 },
-  //  id: 22,
-  //  panels: [],
-  //  title: 'Pod Network Metrics',
-  //  type: 'row',
-  //},
 
   getAllPanels():: [
     chaos_panels.scenarioDetailsRow(),
     chaos_panels.scenarioUuidDetails('Pod Network Scenario UUID Details', queries.podNetworkScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    // self.podNetworkMetricsRow(),
-    timeseriesPanel(2, 'Pod Network Latency', 'Network latency (ms) between pods during the chaos scenario.', queries.podNetworkLatency, 'ms', 0, 21, 12),
-    timeseriesPanel(3, 'Pod Packet Loss', 'Percentage of packets lost between pods during the chaos scenario.', queries.podPacketLoss, 'percent', 12, 21, 12),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),
