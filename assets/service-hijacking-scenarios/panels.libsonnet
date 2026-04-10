@@ -59,23 +59,12 @@ local timeseriesPanel(id, title, description, query, unit='ms', gridX=0, gridY=2
 };
 
 {
-  hijackingMetricsRow():: {
-    collapsed: false,
-    gridPos: { h: 1, w: 24, x: 0, y: 20 },
-    id: 22,
-    panels: [],
-    title: 'Service Hijacking Metrics',
-    type: 'row',
-  },
 
   getAllPanels():: [
     chaos_panels.scenarioDetailsRow(),
     chaos_panels.scenarioUuidDetails('Service Hijacking Scenario UUID Details', queries.serviceHijackingScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    self.hijackingMetricsRow(),
-    timeseriesPanel(2, 'Service Response Time', 'Response time (ms) of the targeted service during the hijacking scenario.', queries.serviceResponseTime, 'ms', 0, 21, 12),
-    timeseriesPanel(3, 'Hijacking Duration', 'Total duration of the service hijacking fault injection.', queries.hijackingDuration, 's', 12, 21, 12),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),

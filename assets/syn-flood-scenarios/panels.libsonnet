@@ -59,23 +59,12 @@ local timeseriesPanel(id, title, description, query, unit='short', gridX=0, grid
 };
 
 {
-  // synFloodMetricsRow():: {
-  //   collapsed: false,
-  //   gridPos: { h: 1, w: 24, x: 0, y: 20 },
-  //   id: 22,
-  //   panels: [],
-  //   title: 'SYN Flood Metrics',
-  //   type: 'row',
-  // },
 
   getAllPanels():: [
     chaos_panels.scenarioDetailsRow(),
     chaos_panels.scenarioUuidDetails('SYN Flood Scenario UUID Details', queries.synFloodScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    // self.synFloodMetricsRow(),
-    timeseriesPanel(2, 'Active Connection Count During Flood', 'Number of SYN connections established during the flood attack.', queries.connectionCount, 'short', 0, 21, 12),
-    timeseriesPanel(3, 'Service Recovery Time', 'Time for the targeted service to recover after the SYN flood.', queries.serviceRecoveryTime, 's', 12, 21, 12),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),

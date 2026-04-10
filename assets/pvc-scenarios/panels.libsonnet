@@ -59,23 +59,12 @@ local timeseriesPanel(id, title, description, query, unit='s', gridX=0, gridY=21
 };
 
 {
-  // pvcMetricsRow():: {
-  //   collapsed: false,
-  //   gridPos: { h: 1, w: 24, x: 0, y: 20 },
-  //   id: 22,
-  //   panels: [],
-  //   title: 'PVC Scenario Metrics',
-  //   type: 'row',
-  // },
 
   getAllPanels():: [
     chaos_panels.scenarioDetailsRow(),
     chaos_panels.scenarioUuidDetails('PVC Scenario UUID Details', queries.pvcScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    // self.pvcMetricsRow(),
-    timeseriesPanel(2, 'PVC Recovery Time', 'Time for the PVC to recover and become bound after chaos injection.', queries.pvcRecoveryTime, 's', 0, 21, 12),
-    timeseriesPanel(3, 'PVC Attach/Detach Duration', 'Time taken to attach and detach the PVC during the scenario.', queries.pvcAttachDetachDuration, 's', 12, 21, 12),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),

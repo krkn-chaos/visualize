@@ -64,8 +64,6 @@ local timeseriesPanel(id, title, description, query, unit='s', gridX=0, gridY=21
     chaos_panels.scenarioUuidDetails('Zone Outage Scenario UUID Details', queries.zoneOutageScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
-    timeseriesPanel(2, 'Zone Recovery Time', 'Time for the zone to recover after an outage event.', queries.zoneRecoveryTime, 's', 0, 21, 12),
-    timeseriesPanel(3, 'Affected Nodes Count', 'Number of nodes affected during the zone outage.', queries.affectedNodesCount, 'short', 12, 21, 12),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),
