@@ -31,11 +31,11 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   workersCGroupCpuRate: {
     query():
-      generateTimeSeriesQuery('sum by (id) (( rate(container_cpu_usage_seconds_total{ job=~".*", id =~"/system.slice|/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$interval])) * 100 * on (node) group_left kube_node_role{ role = "worker" } )', '{{instance}}'),
+      generateTimeSeriesQuery('sum by (id) (( rate(container_cpu_usage_seconds_total{ job=~".*", id =~"/system.slice|/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$__rate_interval])) * 100 * on (node) group_left kube_node_role{ role = "worker" } )', '{{instance}}'),
   },
   controlPlaneCGroupCpuRate: {
     query():
-      generateTimeSeriesQuery('sum by (id) (( rate(container_cpu_usage_seconds_total{ job=~".*", id =~"/system.slice|/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$interval])) * 100 * on (node) group_left kube_node_role{ role = "control-plane" } )', '{{instance}}'),
+      generateTimeSeriesQuery('sum by (id) (( rate(container_cpu_usage_seconds_total{ job=~".*", id =~"/system.slice|/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$__rate_interval])) * 100 * on (node) group_left kube_node_role{ role = "control-plane" } )', '{{instance}}'),
   },
   workersCGroupMemoryRSS: {
     query():
@@ -84,32 +84,32 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   nodeCPU: {
     query(nodeName):
-      generateTimeSeriesQuery('sum by (instance, mode)(irate(node_cpu_seconds_total{instance=~"' + nodeName + '",job=~".*"}[$interval])) * 100', 'Busy {{mode}}'),
+      generateTimeSeriesQuery('sum by (instance, mode)(irate(node_cpu_seconds_total{instance=~"' + nodeName + '",job=~".*"}[$__rate_interval])) * 100', 'Busy {{mode}}'),
   },
   diskThroughput: {
     query(nodeName):
-      generateTimeSeriesQuery('rate(node_disk_read_bytes_total{device=~"$block_device",instance=~"' + nodeName + '"}[$interval])', '{{ device }} - read')
-      + generateTimeSeriesQuery('rate(node_disk_written_bytes_total{device=~"$block_device",instance=~"' + nodeName + '"}[$interval])', '{{ device }} - write'),
+      generateTimeSeriesQuery('rate(node_disk_read_bytes_total{device=~"$block_device",instance=~"' + nodeName + '"}[$__rate_interval])', '{{ device }} - read')
+      + generateTimeSeriesQuery('rate(node_disk_written_bytes_total{device=~"$block_device",instance=~"' + nodeName + '"}[$__rate_interval])', '{{ device }} - write'),
   },
   diskIOPS: {
     query(nodeName):
-      generateTimeSeriesQuery('rate(node_disk_reads_completed_total{device=~"$block_device",instance=~"' + nodeName + '"}[$interval])', '{{ device }} - read')
-      + generateTimeSeriesQuery('rate(node_disk_writes_completed_total{device=~"$block_device",instance=~"' + nodeName + '"}[$interval])', '{{ device }} - write'),
+      generateTimeSeriesQuery('rate(node_disk_reads_completed_total{device=~"$block_device",instance=~"' + nodeName + '"}[$__rate_interval])', '{{ device }} - read')
+      + generateTimeSeriesQuery('rate(node_disk_writes_completed_total{device=~"$block_device",instance=~"' + nodeName + '"}[$__rate_interval])', '{{ device }} - write'),
   },
   networkUtilization: {
     query(nodeName):
-      generateTimeSeriesQuery('rate(node_network_receive_bytes_total{instance=~"' + nodeName + '",device=~"$net_device"}[$interval]) * 8', '{{instance}} - {{device}} - RX')
-      + generateTimeSeriesQuery('rate(node_network_transmit_bytes_total{instance=~"' + nodeName + '",device=~"$net_device"}[$interval]) * 8', '{{instance}} - {{device}} - TX'),
+      generateTimeSeriesQuery('rate(node_network_receive_bytes_total{instance=~"' + nodeName + '",device=~"$net_device"}[$__rate_interval]) * 8', '{{instance}} - {{device}} - RX')
+      + generateTimeSeriesQuery('rate(node_network_transmit_bytes_total{instance=~"' + nodeName + '",device=~"$net_device"}[$__rate_interval]) * 8', '{{instance}} - {{device}} - TX'),
   },
   networkPackets: {
     query(nodeName):
-      generateTimeSeriesQuery('rate(node_network_receive_packets_total{instance=~"' + nodeName + '",device=~"$net_device"}[$interval])', '{{instance}} - {{device}} - RX')
-      + generateTimeSeriesQuery('rate(node_network_transmit_packets_total{instance=~"' + nodeName + '",device=~"$net_device"}[$interval])', '{{instance}} - {{device}} - TX'),
+      generateTimeSeriesQuery('rate(node_network_receive_packets_total{instance=~"' + nodeName + '",device=~"$net_device"}[$__rate_interval])', '{{instance}} - {{device}} - RX')
+      + generateTimeSeriesQuery('rate(node_network_transmit_packets_total{instance=~"' + nodeName + '",device=~"$net_device"}[$__rate_interval])', '{{instance}} - {{device}} - TX'),
   },
   networkDrop: {
     query(nodeName):
-      generateTimeSeriesQuery('topk(10, rate(node_network_receive_drop_total{instance=~"' + nodeName + '"}[$interval]))', 'rx-drop-{{ device }}')
-      + generateTimeSeriesQuery('topk(10,rate(node_network_transmit_drop_total{instance=~"' + nodeName + '"}[$interval]))', 'tx-drop-{{ device }}'),
+      generateTimeSeriesQuery('topk(10, rate(node_network_receive_drop_total{instance=~"' + nodeName + '"}[$__rate_interval]))', 'rx-drop-{{ device }}')
+      + generateTimeSeriesQuery('topk(10,rate(node_network_transmit_drop_total{instance=~"' + nodeName + '"}[$__rate_interval]))', 'tx-drop-{{ device }}'),
   },
   conntrackStats: {
     query(nodeName):
@@ -118,7 +118,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   top10ContainerCPU: {
     query(nodeName):
-      generateTimeSeriesQuery('topk(10, sum(irate(container_cpu_usage_seconds_total{container!="POD",name!="",node=~"' + nodeName + '",namespace!="",namespace=~"$namespace"}[$interval])) by (pod,container,namespace,name,service) * 100)', '{{ pod }}: {{ container }}'),
+      generateTimeSeriesQuery('topk(10, sum(irate(container_cpu_usage_seconds_total{container!="POD",name!="",node=~"' + nodeName + '",namespace!="",namespace=~"$namespace"}[$__rate_interval])) by (pod,container,namespace,name,service) * 100)', '{{ pod }}: {{ container }}'),
   },
   top10ContainerRSS: {
     query(nodeName):
@@ -126,7 +126,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   nodeCGroupCPU: {
     query(nodeName):
-      generateTimeSeriesQuery('sum by (id) ( rate(container_cpu_usage_seconds_total{ job=~".*", id =~"/system.slice|/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice", node=~"' + nodeName + '"}[$interval])) * 100', '{{ id }}'),
+      generateTimeSeriesQuery('sum by (id) ( rate(container_cpu_usage_seconds_total{ job=~".*", id =~"/system.slice|/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice", node=~"' + nodeName + '"}[$__rate_interval])) * 100', '{{ id }}'),
   },
   nodeCGroupRSS: {
     query(nodeName):
@@ -134,17 +134,17 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   containerReadWriteBytesPod: {
     query(nodeName):
-      generateTimeSeriesQuery('sum(rate(container_fs_writes_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", pod!=""}[$interval])) by (device, pod)', '{{ pod }}: {{ device }} - write')
-      + generateTimeSeriesQuery('sum(rate(container_fs_reads_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", pod!=""}[$interval])) by (device, pod)', '{{ pod }}: {{ device }} - read'),
+      generateTimeSeriesQuery('sum(rate(container_fs_writes_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", pod!=""}[$__rate_interval])) by (device, pod)', '{{ pod }}: {{ device }} - write')
+      + generateTimeSeriesQuery('sum(rate(container_fs_reads_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", pod!=""}[$__rate_interval])) by (device, pod)', '{{ pod }}: {{ device }} - read'),
   },
   containerReadWriteBytesCGroup: {
     query(nodeName):
-      generateTimeSeriesQuery('sum(rate(container_fs_writes_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", id =~"/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$interval])) by (device, id)', '{{ id }}: {{ device }} - write')
-      + generateTimeSeriesQuery('sum(rate(container_fs_reads_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", id =~"/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$interval])) by (device, id)', '{{ id }}: {{ device }} - read'),
+      generateTimeSeriesQuery('sum(rate(container_fs_writes_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", id =~"/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$__rate_interval])) by (device, id)', '{{ id }}: {{ device }} - write')
+      + generateTimeSeriesQuery('sum(rate(container_fs_reads_bytes_total{device!~".+dm.+", node=~"' + nodeName + '", id =~"/system.slice/kubelet.service|/system.slice/ovs-vswitchd.service|/system.slice/crio.service|/system.slice/systemd-journald.service|/system.slice/ovsdb-server.service|/system.slice/systemd-udevd.service|/kubepods.slice"}[$__rate_interval])) by (device, id)', '{{ id }}: {{ device }} - read'),
   },
   stackroxCPU: {
     query():
-      generateTimeSeriesQuery('topk(25, sum(irate(container_cpu_usage_seconds_total{container!="POD",name!="",namespace!="",namespace=~"stackrox"}[$interval])) by (pod,container,namespace,name,service) * 100)', '{{ pod }}: {{ container }}'),
+      generateTimeSeriesQuery('topk(25, sum(irate(container_cpu_usage_seconds_total{container!="POD",name!="",namespace!="",namespace=~"stackrox"}[$__rate_interval])) by (pod,container,namespace,name,service) * 100)', '{{ pod }}: {{ container }}'),
   },
   stackroxMem: {
     query():
@@ -152,8 +152,8 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   OVSCPU: {
     query(nodeName):
-      generateTimeSeriesQuery('irate(container_cpu_usage_seconds_total{id=~"/system.slice/ovs-vswitchd.service", node=~"' + nodeName + '"}[$interval])*100', 'OVS CPU - {{ node }}')
-      + generateTimeSeriesQuery('irate(container_cpu_usage_seconds_total{id=~"/system.slice/ovsdb-server.service", node=~"' + nodeName + '"}[$interval])*100', 'OVS DB CPU - {{ node }}'),
+      generateTimeSeriesQuery('irate(container_cpu_usage_seconds_total{id=~"/system.slice/ovs-vswitchd.service", node=~"' + nodeName + '"}[$__rate_interval])*100', 'OVS CPU - {{ node }}')
+      + generateTimeSeriesQuery('irate(container_cpu_usage_seconds_total{id=~"/system.slice/ovsdb-server.service", node=~"' + nodeName + '"}[$__rate_interval])*100', 'OVS DB CPU - {{ node }}'),
   },
   OVSMemory: {
     query(nodeName):
@@ -162,19 +162,19 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   ovnAnnotationLatency: {
     query():
-      generateTimeSeriesQuery('histogram_quantile(0.99, sum by (pod, le) (rate(ovnkube_controller_pod_creation_latency_seconds_bucket[$interval]))) > 0', '{{ pod }}'),
+      generateTimeSeriesQuery('histogram_quantile(0.99, sum by (pod, le) (rate(ovnkube_controller_pod_creation_latency_seconds_bucket[$__rate_interval]))) > 0', '{{ pod }}'),
   },
   ovnCNIAdd: {
     query():
-      generateTimeSeriesQuery('histogram_quantile(0.99, sum(rate(ovnkube_node_cni_request_duration_seconds_bucket{command="ADD"}[$interval])) by (pod,le)) > 0', '{{ pod }}'),
+      generateTimeSeriesQuery('histogram_quantile(0.99, sum(rate(ovnkube_node_cni_request_duration_seconds_bucket{command="ADD"}[$__rate_interval])) by (pod,le)) > 0', '{{ pod }}'),
   },
   ovnCNIDel: {
     query():
-      generateTimeSeriesQuery('histogram_quantile(0.99, sum(rate(ovnkube_node_cni_request_duration_seconds_bucket{command="DEL"}[$interval])) by (pod,le)) > 0', '{{ pod }}'),
+      generateTimeSeriesQuery('histogram_quantile(0.99, sum(rate(ovnkube_node_cni_request_duration_seconds_bucket{command="DEL"}[$__rate_interval])) by (pod,le)) > 0', '{{ pod }}'),
   },
   ovnKubeControlPlaneCPU: {
     query():
-      generateTimeSeriesQuery('sum( irate(container_cpu_usage_seconds_total{pod=~"(ovnkube-master|ovnkube-control-plane).+",namespace="openshift-ovn-kubernetes",container!~"POD|"}[$interval])*100 ) by (pod, node)', '{{pod}} - {{node}}'),
+      generateTimeSeriesQuery('sum( irate(container_cpu_usage_seconds_total{pod=~"(ovnkube-master|ovnkube-control-plane).+",namespace="openshift-ovn-kubernetes",container!~"POD|"}[$__rate_interval])*100 ) by (pod, node)', '{{pod}} - {{node}}'),
   },
   ovnKubeControlPlaneMem: {
     query():
@@ -182,7 +182,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   topOvnControllerCPU: {
     query():
-      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="ovn-controller"}[$interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
+      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="ovn-controller"}[$__rate_interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
   },
   topOvnControllerMem: {
     query():
@@ -190,7 +190,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   ovnKubeControllerCPU: {
     query():
-      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="ovnkube-controller"}[$interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
+      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="ovnkube-controller"}[$__rate_interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
   },
   ovnKubeControllerMem: {
     query():
@@ -198,7 +198,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   topNbdbCPU: {
     query():
-      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="nbdb"}[$interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
+      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="nbdb"}[$__rate_interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
   },
   topNbdbMem: {
     query():
@@ -206,7 +206,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   topNorthdCPU: {
     query():
-      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="northd"}[$interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
+      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="northd"}[$__rate_interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
   },
   topNorthdMem: {
     query():
@@ -214,7 +214,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   topSbdbCPU: {
     query():
-      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="sbdb"}[$interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
+      generateTimeSeriesQuery('topk(10, sum( irate(container_cpu_usage_seconds_total{pod=~"ovnkube-.*",namespace="openshift-ovn-kubernetes",container="sbdb"}[$__rate_interval])*100)  by (pod,node) )', '{{pod}} - {{node}}'),
   },
   topSbdbMem: {
     query():
@@ -223,8 +223,8 @@ local generateTimeSeriesQuery(query, legend) = [
 
   promReplCpuUsage: {
     query():
-      generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"prometheus-k8s-0",namespace!="",name!="",container="prometheus"}[$interval])) by (pod,container) * 100', '{{pod}}')
-      + generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"prometheus-k8s-1",namespace!="",name!="",container="prometheus"}[$interval])) by (pod,container) * 100', '{{pod}}'),
+      generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"prometheus-k8s-0",namespace!="",name!="",container="prometheus"}[$__rate_interval])) by (pod,container) * 100', '{{pod}}')
+      + generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"prometheus-k8s-1",namespace!="",name!="",container="prometheus"}[$__rate_interval])) by (pod,container) * 100', '{{pod}}'),
   },
   promReplMemUsage: {
     query():
@@ -233,8 +233,8 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   metricsServerCpuUsage: {
     query():
-      generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"metrics-server-.*",namespace!="",name!=""}[$interval])) by (pod,container) * 100', '{{pod}}')
-      + generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"prometheus-adapter-.*",namespace="openshift-monitoring",name!=""}[$interval])) by (pod,container) * 100', '{{pod}}'),
+      generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"metrics-server-.*",namespace!="",name!=""}[$__rate_interval])) by (pod,container) * 100', '{{pod}}')
+      + generateTimeSeriesQuery('sum(irate(container_cpu_usage_seconds_total{pod=~"prometheus-adapter-.*",namespace="openshift-monitoring",name!=""}[$__rate_interval])) by (pod,container) * 100', '{{pod}}'),
   },
   metricsServerMemUsage: {
     query():
@@ -243,11 +243,11 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   kubeletCPU: {
     query():
-      generateTimeSeriesQuery('topk(10,irate(process_cpu_seconds_total{service="kubelet",job="kubelet"}[$interval])*100 *  on (node) group_left kube_node_role{ role = "worker" })', 'kubelet - {{node}}'),
+      generateTimeSeriesQuery('topk(10,irate(process_cpu_seconds_total{service="kubelet",job="kubelet"}[$__rate_interval])*100 *  on (node) group_left kube_node_role{ role = "worker" })', 'kubelet - {{node}}'),
   },
   crioCPU: {
     query():
-      generateTimeSeriesQuery('topk(10,irate(process_cpu_seconds_total{service="kubelet",job="crio"}[$interval])*100 *  on (node) group_left kube_node_role{ role = "worker" })', 'crio - {{node}}'),
+      generateTimeSeriesQuery('topk(10,irate(process_cpu_seconds_total{service="kubelet",job="crio"}[$__rate_interval])*100 *  on (node) group_left kube_node_role{ role = "worker" })', 'crio - {{node}}'),
   },
   kubeletMemory: {
     query():
@@ -322,7 +322,7 @@ local generateTimeSeriesQuery(query, legend) = [
   },
   top10ContCPU: {
     query():
-      generateTimeSeriesQuery('topk(10,irate(container_cpu_usage_seconds_total{namespace!="",container!="POD",name!=""}[$interval])*100)', '{{ namespace }} - {{ name }}'),
+      generateTimeSeriesQuery('topk(10,irate(container_cpu_usage_seconds_total{namespace!="",container!="POD",name!=""}[$__rate_interval])*100)', '{{ namespace }} - {{ name }}'),
   },
   goroutinesCount: {
     query():
