@@ -25,7 +25,7 @@ local generateTableQuery(query) = [
   vmiPhaseCount: {
     query():
       generateTimeSeriesQuery(
-        'count by (phase) (kubevirt_vmi_phase_count{namespace=~"$namespace"})',
+        'count by (phase) (kubevirt_vmi_info{namespace=~"$namespace"})',
         '{{phase}}'
       ),
   },
@@ -49,8 +49,24 @@ local generateTableQuery(query) = [
   vmiPhaseOverTime: {
     query():
       generateTimeSeriesQuery(
-        '(kubevirt_vmi_info{namespace=~"$namespace", phase="pending"} * 0 + 0.01) or (kubevirt_vmi_info{namespace=~"$namespace", phase="scheduling"} * 0 + 0.25) or (kubevirt_vmi_info{namespace=~"$namespace", phase="scheduled"} * 0 + 0.5) or (kubevirt_vmi_info{namespace=~"$namespace", phase="running"} * 0 + 1) or (kubevirt_vmi_info{namespace=~"$namespace", phase="succeeded"} * 0 + 1.5) or (kubevirt_vmi_info{namespace=~"$namespace", phase="failed"} * 0 - 1)',
-        '{{name}}'
+        '(kubevirt_vmi_info{namespace=~"$namespace", phase="pending"} * 0 + 1)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="scheduling"} * 0 + 2)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="scheduled"} * 0 + 3)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="running"} * 0 + 4)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="succeeded"} * 0 + 5)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="failed"} * 0 + 0)',
+        '{{namespace}}/{{name}}'
+      ),
+  },
+
+  // Phase transitions counter — captures brief phases (scheduling/scheduled) that
+  // kubevirt_vmi_info misses due to 30s scrape interval. Reports under openshift-cnv
+  // regardless of VMI namespace (KubeVirt control-plane reporting behavior).
+  vmiPhaseTransitions: {
+    query():
+      generateTimeSeriesQuery(
+        'increase(kubevirt_vmi_phase_transition_time_seconds_count[$__rate_interval])',
+        '{{phase}}'
       ),
   },
 

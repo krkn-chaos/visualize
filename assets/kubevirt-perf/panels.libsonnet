@@ -71,6 +71,34 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
         'max',
         'min',
       ]),
+
+    genericTimeSeriesListLegend(title, unit, targets, gridPos):
+      self.base(title, unit, targets, gridPos)
+      + options.legend.withShowLegend(true)
+      + options.legend.withDisplayMode('list')
+      + options.legend.withPlacement('bottom'),
+
+    vmiPhaseTimeline(title, targets, gridPos):
+      self.base(title, 'none', targets, gridPos)
+      + custom.withSpanNulls(true)
+      + options.legend.withShowLegend(true)
+      + options.legend.withDisplayMode('list')
+      + options.legend.withPlacement('right')
+      + (local ts = g.panel.timeSeries; ts.standardOptions.withMin(0))
+      + (local ts = g.panel.timeSeries; ts.standardOptions.withMax(5))
+      + (local ts = g.panel.timeSeries; ts.standardOptions.withMappings([
+        {
+          type: 'value',
+          options: {
+            '0': { text: 'Failed', color: 'red', index: 0 },
+            '1': { text: 'Pending', color: 'yellow', index: 1 },
+            '2': { text: 'Scheduling', color: 'orange', index: 2 },
+            '3': { text: 'Scheduled', color: 'light-green', index: 3 },
+            '4': { text: 'Running', color: 'green', index: 4 },
+            '5': { text: 'Succeeded', color: 'blue', index: 5 },
+          },
+        },
+      ])),
   },
 
   table: {
