@@ -24,7 +24,7 @@ g.dashboard.new('KubeVirt Performance')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 0, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.stat.genericStatPanel('Total VMIs', 'none', queries.vmiCountTotal.query(), { x: 0, y: 1, w: 8, h: 3 }),
+    panels.stat.genericStatPanel('Total VMIs', 'none', queries.vmiCountTotal.query(), { x: 0, y: 1, w: 24, h: 3 }),
     panels.table.genericTablePanel('Virtual Machine Instances', queries.vmiInfo.query(), { x: 0, y: 4, w: 24, h: 8 }),
   ]),
 
@@ -34,7 +34,7 @@ g.dashboard.new('KubeVirt Performance')
   + g.panel.row.withPanels([
     panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Phase', 'none', queries.vmiPhaseCount.query(), { x: 0, y: 2, w: 12, h: 6 }),
     panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Namespace', 'none', queries.vmiCountByNamespace.query(), { x: 12, y: 2, w: 12, h: 6 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Phases over time', 'none', queries.vmiPhaseOverTime.query(), { x: 0, y: 8, w: 24, h: 6 }),
+    panels.timeSeries.vmiPhaseTimeline('VMI Phases over time (current state)', queries.vmiPhaseOverTime.query(), { x: 0, y: 8, w: 24, h: 6 }),
   ]),
 
   g.panel.row.new('CPU Metrics')
