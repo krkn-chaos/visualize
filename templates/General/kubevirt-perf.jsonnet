@@ -17,6 +17,7 @@ g.dashboard.new('KubeVirt Performance')
 + g.dashboard.withVariables([
   variables.Datasource,
   variables.namespace,
+  variables.vmi,
 ])
 
 + g.dashboard.withPanels([
@@ -35,15 +36,18 @@ g.dashboard.new('KubeVirt Performance')
     panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Phase', 'none', queries.vmiPhaseCount.query(), { x: 0, y: 2, w: 12, h: 6 }),
     panels.timeSeries.genericTimeSeriesLegendPanel('VMI Count by Namespace', 'none', queries.vmiCountByNamespace.query(), { x: 12, y: 2, w: 12, h: 6 }),
     panels.timeSeries.vmiPhaseTimeline('VMI Phases over time (current state)', queries.vmiPhaseOverTime.query(), { x: 0, y: 8, w: 24, h: 6 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMIs Ready (Running)', 'none', queries.vmiReadyCount.query(), { x: 0, y: 14, w: 8, h: 6 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMIs Evictable (Live-Migratable)', 'none', queries.vmiEvictableCount.query(), { x: 8, y: 14, w: 8, h: 6 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMIs Outdated', 'none', queries.vmiOutdatedCount.query(), { x: 16, y: 14, w: 8, h: 6 }),
   ]),
 
   g.panel.row.new('CPU Metrics')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 2, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI CPU Usage', 'percent', queries.vmiCpuUsage.query(), { x: 0, y: 3, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI CPU System', 'percent', queries.vmiCpuSystem.query(), { x: 12, y: 3, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('VMI CPU User', 'percent', queries.vmiCpuUser.query(), { x: 0, y: 11, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('Total CPU Usage', 'percent', queries.vmiCpuUsage.query(), { x: 0, y: 3, w: 8, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('vCPU Running Time', 'percent', queries.vmiCpuVcpuRunning.query(), { x: 8, y: 3, w: 8, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('CPU per vCPU', 'percent', queries.vmiCpuPerVcpu.query(), { x: 16, y: 3, w: 8, h: 8 }),
   ]),
 
   g.panel.row.new('Memory Metrics')
@@ -65,6 +69,9 @@ g.dashboard.new('KubeVirt Performance')
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Transmit Packets', 'pps', queries.vmiNetworkTransmitPackets.query(), { x: 12, y: 13, w: 12, h: 8 }),
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Receive Errors', 'short', queries.vmiNetworkReceiveErrors.query(), { x: 0, y: 21, w: 12, h: 8 }),
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Transmit Errors', 'short', queries.vmiNetworkTransmitErrors.query(), { x: 12, y: 21, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('Probe Pod Receive ($vmi)', 'Bps', queries.vmiChaosProbeReceive.query(), { x: 0, y: 29, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('All Probe Pods Receive (namespace)', 'Bps', queries.vmiChaosAllProbesReceive.query(), { x: 12, y: 29, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('Receive + Transmit Overlay ($vmi, 1m)', 'Bps', queries.vmiChaosOverlayReceive.query() + queries.vmiChaosOverlayTransmit.query(), { x: 0, y: 37, w: 24, h: 8 }),
   ]),
 
   g.panel.row.new('Storage Metrics')

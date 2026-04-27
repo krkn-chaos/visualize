@@ -19,13 +19,13 @@ local generateTableQuery(query) = [
 {
   vmiInfo: {
     query():
-      generateTableQuery('kubevirt_vmi_info{namespace=~"$namespace", phase="running"}'),
+      generateTableQuery('kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="running"}'),
   },
 
   vmiPhaseCount: {
     query():
       generateTimeSeriesQuery(
-        'count by (phase) (kubevirt_vmi_info{namespace=~"$namespace"})',
+        'count by (phase) (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi"})',
         '{{phase}}'
       ),
   },
@@ -33,7 +33,7 @@ local generateTableQuery(query) = [
   vmiCountByNamespace: {
     query():
       generateTimeSeriesQuery(
-        'count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace"})',
+        'count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi"})',
         '{{namespace}}'
       ),
   },
@@ -41,20 +41,44 @@ local generateTableQuery(query) = [
   vmiCountTotal: {
     query():
       generateTimeSeriesQuery(
-        'count by (phase) (kubevirt_vmi_info{namespace=~"$namespace"})',
+        'count by (phase) (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi"})',
         '{{phase}}'
+      ),
+  },
+
+  vmiReadyCount: {
+    query():
+      generateTimeSeriesQuery(
+        'count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="running"})',
+        '{{namespace}}'
+      ),
+  },
+
+  vmiEvictableCount: {
+    query():
+      generateTimeSeriesQuery(
+        'count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", evictable="true"})',
+        '{{namespace}}'
+      ),
+  },
+
+  vmiOutdatedCount: {
+    query():
+      generateTimeSeriesQuery(
+        'count by (namespace) (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", outdated="true"})',
+        '{{namespace}}'
       ),
   },
 
   vmiPhaseOverTime: {
     query():
       generateTimeSeriesQuery(
-        '(kubevirt_vmi_info{namespace=~"$namespace", phase="pending"} * 0 + 1)'
-        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="scheduling"} * 0 + 2)'
-        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="scheduled"} * 0 + 3)'
-        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="running"} * 0 + 4)'
-        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="succeeded"} * 0 + 5)'
-        + ' or (kubevirt_vmi_info{namespace=~"$namespace", phase="failed"} * 0 + 0)',
+        '(kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="pending"} * 0 + 1)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="scheduling"} * 0 + 2)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="scheduled"} * 0 + 3)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="running"} * 0 + 4)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="succeeded"} * 0 + 5)'
+        + ' or (kubevirt_vmi_info{namespace=~"$namespace", name=~"$vmi", phase="failed"} * 0 + 0)',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -65,7 +89,7 @@ local generateTableQuery(query) = [
   vmiPhaseTransitions: {
     query():
       generateTimeSeriesQuery(
-        'increase(kubevirt_vmi_phase_transition_time_seconds_count[$__rate_interval])',
+        'increase(kubevirt_vmi_phase_transition_time_seconds_count{name=~"$vmi"}[$__rate_interval])',
         '{{phase}}'
       ),
   },
@@ -74,24 +98,24 @@ local generateTableQuery(query) = [
   vmiCpuUsage: {
     query():
       generateTimeSeriesQuery(
-        '(sum(rate(kubevirt_vmi_vcpu_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100) or (sum(rate(kubevirt_vmi_cpu_system_seconds{namespace=~"$namespace"}[$__rate_interval]) + rate(kubevirt_vmi_cpu_user_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100)',
+        'sum(rate(kubevirt_vmi_cpu_usage_seconds_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace) * 100',
         '{{namespace}}/{{name}}'
       ),
   },
 
-  vmiCpuSystem: {
+  vmiCpuVcpuRunning: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_cpu_system_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100',
+        'sum(rate(kubevirt_vmi_vcpu_seconds_total{namespace=~"$namespace", name=~"$vmi", state="running"}[1m])) by (name, namespace) * 100',
         '{{namespace}}/{{name}}'
       ),
   },
 
-  vmiCpuUser: {
+  vmiCpuPerVcpu: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_cpu_user_seconds{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace) * 100',
-        '{{namespace}}/{{name}}'
+        'sum(rate(kubevirt_vmi_vcpu_seconds_total{namespace=~"$namespace", name=~"$vmi", state="running"}[1m])) by (name, namespace, id) * 100',
+        '{{namespace}}/{{name}} vCPU{{id}}'
       ),
   },
 
@@ -99,7 +123,7 @@ local generateTableQuery(query) = [
   vmiMemoryAvailable: {
     query():
       generateTimeSeriesQuery(
-        'kubevirt_vmi_memory_available_bytes{namespace=~"$namespace"}',
+        'kubevirt_vmi_memory_available_bytes{namespace=~"$namespace", name=~"$vmi"}',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -107,7 +131,7 @@ local generateTableQuery(query) = [
   vmiMemoryUsed: {
     query():
       generateTimeSeriesQuery(
-        'kubevirt_vmi_memory_used_bytes{namespace=~"$namespace"}',
+        'kubevirt_vmi_memory_used_bytes{namespace=~"$namespace", name=~"$vmi"}',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -115,7 +139,7 @@ local generateTableQuery(query) = [
   vmiMemoryResident: {
     query():
       generateTimeSeriesQuery(
-        'kubevirt_vmi_memory_resident_bytes{namespace=~"$namespace"}',
+        'kubevirt_vmi_memory_resident_bytes{namespace=~"$namespace", name=~"$vmi"}',
         '{{namespace}}/{{name}}'
       ),
   },
@@ -124,7 +148,7 @@ local generateTableQuery(query) = [
   vmiNetworkReceiveBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_receive_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_receive_bytes_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -132,7 +156,7 @@ local generateTableQuery(query) = [
   vmiNetworkTransmitBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_transmit_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_transmit_bytes_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -140,7 +164,7 @@ local generateTableQuery(query) = [
   vmiNetworkReceivePackets: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_receive_packets_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_receive_packets_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -148,7 +172,7 @@ local generateTableQuery(query) = [
   vmiNetworkTransmitPackets: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_transmit_packets_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_transmit_packets_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
@@ -156,12 +180,61 @@ local generateTableQuery(query) = [
   vmiNetworkReceiveErrors: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_network_receive_errors_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        'sum(rate(kubevirt_vmi_network_receive_errors_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, interface)',
         '{{namespace}}/{{name}} - {{interface}}'
       ),
   },
 
   vmiNetworkTransmitErrors: {
+    query():
+      generateTimeSeriesQuery(
+        'sum(rate(kubevirt_vmi_network_transmit_errors_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, interface)',
+        '{{namespace}}/{{name}} - {{interface}}'
+      ),
+  },
+
+  // Live Network Metrics (rate with $__rate_interval, lastNotNull legend for current value)
+  vmiNetworkReceiveBytesLive: {
+    query():
+      generateTimeSeriesQuery(
+        'sum(rate(kubevirt_vmi_network_receive_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        '{{namespace}}/{{name}} - {{interface}}'
+      ),
+  },
+
+  vmiNetworkTransmitBytesLive: {
+    query():
+      generateTimeSeriesQuery(
+        'sum(rate(kubevirt_vmi_network_transmit_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        '{{namespace}}/{{name}} - {{interface}}'
+      ),
+  },
+
+  vmiNetworkReceivePacketsLive: {
+    query():
+      generateTimeSeriesQuery(
+        'sum(rate(kubevirt_vmi_network_receive_packets_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        '{{namespace}}/{{name}} - {{interface}}'
+      ),
+  },
+
+  vmiNetworkTransmitPacketsLive: {
+    query():
+      generateTimeSeriesQuery(
+        'sum(rate(kubevirt_vmi_network_transmit_packets_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        '{{namespace}}/{{name}} - {{interface}}'
+      ),
+  },
+
+  vmiNetworkReceiveErrorsLive: {
+    query():
+      generateTimeSeriesQuery(
+        'sum(rate(kubevirt_vmi_network_receive_errors_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
+        '{{namespace}}/{{name}} - {{interface}}'
+      ),
+  },
+
+  vmiNetworkTransmitErrorsLive: {
     query():
       generateTimeSeriesQuery(
         'sum(rate(kubevirt_vmi_network_transmit_errors_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, interface)',
@@ -173,7 +246,7 @@ local generateTableQuery(query) = [
   vmiStorageReadBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_read_traffic_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_read_traffic_bytes_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
@@ -181,7 +254,7 @@ local generateTableQuery(query) = [
   vmiStorageWriteBytes: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_write_traffic_bytes_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_write_traffic_bytes_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
@@ -189,7 +262,7 @@ local generateTableQuery(query) = [
   vmiStorageReadOps: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_iops_read_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_iops_read_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
       ),
   },
@@ -197,8 +270,83 @@ local generateTableQuery(query) = [
   vmiStorageWriteOps: {
     query():
       generateTimeSeriesQuery(
-        'sum(rate(kubevirt_vmi_storage_iops_write_total{namespace=~"$namespace"}[$__rate_interval])) by (name, namespace, drive)',
+        'sum(rate(kubevirt_vmi_storage_iops_write_total{namespace=~"$namespace", name=~"$vmi"}[1m])) by (name, namespace, drive)',
         '{{namespace}}/{{name}} - {{drive}}'
+      ),
+  },
+
+  // Network Chaos Validation — Layer 1: VMI-level (KubeVirt exporter)
+  vmiChaosReceiveBytes: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_receive_bytes_total{name=~"$vmi", namespace=~"$namespace"}[30s])',
+        'rx - {{name}}/{{interface}}'
+      ),
+  },
+
+  vmiChaosTransmitBytes: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_transmit_bytes_total{name=~"$vmi", namespace=~"$namespace"}[30s])',
+        'tx - {{name}}/{{interface}}'
+      ),
+  },
+
+  vmiChaosReceiveDropped: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_receive_packets_dropped_total{name=~"$vmi", namespace=~"$namespace"}[30s])',
+        'dropped rx - {{name}}/{{interface}}'
+      ),
+  },
+
+  vmiChaosTransmitDropped: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_transmit_packets_dropped_total{name=~"$vmi", namespace=~"$namespace"}[30s])',
+        'dropped tx - {{name}}/{{interface}}'
+      ),
+  },
+
+  vmiChaosAllNamespaceReceive: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_receive_bytes_total{namespace=~"$namespace"}[30s])',
+        '{{name}}/{{interface}}'
+      ),
+  },
+
+  // Network Chaos Validation — Layer 2: probe pods (cAdvisor)
+  vmiChaosProbeReceive: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(container_network_receive_bytes_total{pod=~"traffic-gen-($vmi)", namespace=~"$namespace"}[30s])',
+        '{{pod}}'
+      ),
+  },
+
+  vmiChaosAllProbesReceive: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(container_network_receive_bytes_total{pod=~"traffic-gen-.*", namespace=~"$namespace"}[30s])',
+        '{{pod}}'
+      ),
+  },
+
+  // Network Chaos Validation — Layer 3: before/during/after overlay (1m window)
+  vmiChaosOverlayReceive: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_receive_bytes_total{name=~"$vmi", namespace=~"$namespace"}[1m])',
+        'receive - {{name}}/{{interface}}'
+      ),
+  },
+
+  vmiChaosOverlayTransmit: {
+    query():
+      generateTimeSeriesQuery(
+        'rate(kubevirt_vmi_network_transmit_bytes_total{name=~"$vmi", namespace=~"$namespace"}[1m])',
+        'transmit - {{name}}/{{interface}}'
       ),
   },
 }

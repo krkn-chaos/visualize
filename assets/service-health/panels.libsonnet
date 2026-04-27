@@ -57,7 +57,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
         {
           id: 'organize',
           options: {
-            excludeByName: { Time: true, '__name__': true, job: true, instance: true },
+            excludeByName: { Time: true, __name__: true, job: true, instance: true },
             renameByName: {},
           },
         },
@@ -115,8 +115,15 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
           id: 'organize',
           options: {
             excludeByName: {
-              Time: true, '__name__': true, job: true, instance: true,
-              container: true, endpoint: true, pod: true, uid: true, Value: true,
+              Time: true,
+              __name__: true,
+              job: true,
+              instance: true,
+              container: true,
+              endpoint: true,
+              pod: true,
+              uid: true,
+              Value: true,
             },
             renameByName: { type: 'service_type', cluster_ip: 'cluster_ip' },
           },
@@ -147,9 +154,16 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
           id: 'organize',
           options: {
             excludeByName: {
-              Time: true, '__name__': true, job: true, instance: true,
-              container: true, endpoint: true, pod: true, service: true,
-              status: true, Value: true,
+              Time: true,
+              __name__: true,
+              job: true,
+              instance: true,
+              container: true,
+              endpoint: true,
+              pod: true,
+              service: true,
+              status: true,
+              Value: true,
             },
             renameByName: { type: 'admission_status' },
           },
