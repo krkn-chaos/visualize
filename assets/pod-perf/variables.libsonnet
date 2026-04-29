@@ -13,30 +13,12 @@ local var = g.dashboard.variable;
     + var.query.withDatasourceFromVariable(self.Datasource)
     + var.query.queryTypes.withLabelValues(
       'namespace',
-      'kubevirt_vmi_info',
+      'kube_pod_info',
     )
     + var.query.withRefresh(1)
     + var.query.withRegex('')
-    + var.query.selectionOptions.withMulti(true)
+    + var.query.selectionOptions.withMulti(false)
     + var.query.selectionOptions.withIncludeAll(true)
     + { allValue: '.*' }
     + var.query.generalOptions.withLabel('Namespace'),
-
-  vmi:
-    var.query.new('vmi')
-    + var.query.withDatasourceFromVariable(self.Datasource)
-    + var.query.queryTypes.withLabelValues(
-      'name',
-      'kubevirt_vmi_info{namespace=~"$namespace"}',
-    )
-    + var.query.withRefresh(2)
-    + var.query.withRegex('')
-    + var.query.selectionOptions.withMulti(true)
-    + var.query.selectionOptions.withIncludeAll(true)
-    + { allValue: '.*' }
-    + var.query.generalOptions.withLabel('VMI'),
-
-  interval:
-    var.interval.new('interval', ['2m', '3m', '4m', '5m'],)
-    + var.interval.generalOptions.withLabel('interval'),
 }
