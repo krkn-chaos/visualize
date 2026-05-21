@@ -20,38 +20,48 @@ local generateTableQuery(query) = [
   // Overview
   podInfo: {
     query():
-      generateTableQuery('kube_pod_info{namespace=~"$namespace"}'),
+      generateTableQuery('max by (namespace, pod, container, image) (container_start_time_seconds{namespace=~"$namespace", container!=""})'),
   },
 
   podCountTotal: {
     query():
       generateTimeSeriesQuery(
-        'count by (phase) (kube_pod_status_phase{namespace=~"$namespace"} == 1)',
-        '{{phase}}'
+        'count(group by (namespace, pod) (container_cpu_usage_seconds_total{namespace=~"$namespace", container!=""}))',
+        'Active Pods'
       ),
   },
 
   // Status
-  podPhaseCount: {
+  podStatusOverTime: {
     query():
       generateTimeSeriesQuery(
-        'count by (phase) (kube_pod_status_phase{namespace=~"$namespace"} == 1)',
-        '{{phase}}'
+        |||
+          (kube_pod_status_phase{namespace=~"$namespace", phase="Pending"} == 1) * 0 + 3
+          or (
+            (kube_pod_status_phase{namespace=~"$namespace", phase="Running"} == 1)
+            unless on(namespace, pod) (kube_pod_container_status_waiting_reason{namespace=~"$namespace", reason="CrashLoopBackOff"} == 1)
+          ) * 0 + 4
+          or max by (namespace, pod) ((kube_pod_container_status_waiting_reason{namespace=~"$namespace", reason="CrashLoopBackOff"} == 1) * 0 + 2)
+          or (kube_pod_status_phase{namespace=~"$namespace", phase="Succeeded"} == 1) * 0 + 1
+          or (kube_pod_status_phase{namespace=~"$namespace", phase="Failed"} == 1) * 0 + 2
+          or (kube_pod_status_phase{namespace=~"$namespace", phase="Unknown"} == 1) * 0 + 0
+        |||,
+        '{{namespace}}/{{pod}}'
       ),
   },
 
   podCountByNamespace: {
     query():
       generateTimeSeriesQuery(
-        'count by (namespace) (kube_pod_info{namespace=~"$namespace"})',
+        'count by (namespace) (group by (namespace, pod) (container_cpu_usage_seconds_total{namespace=~"$namespace", container!=""}))',
         '{{namespace}}'
       ),
   },
 
-  podReadyCount: {
+  podActiveContainers: {
     query():
       generateTimeSeriesQuery(
-        'count by (namespace) (kube_pod_status_ready{namespace=~"$namespace", condition="true"} == 1)',
+        'count by (namespace) (container_cpu_usage_seconds_total{namespace=~"$namespace", container!=""})',
         '{{namespace}}'
       ),
   },
@@ -59,7 +69,15 @@ local generateTableQuery(query) = [
   podRestarts: {
     query():
       generateTimeSeriesQuery(
-        'sum by (pod, namespace) (increase(kube_pod_container_status_restarts_total{namespace=~"$namespace"}[$__rate_interval]))',
+        'sum by (pod, namespace) (changes(container_start_time_seconds{namespace=~"$namespace", container!=""}[5m]))',
+        '{{namespace}}/{{pod}}'
+      ),
+  },
+
+  podOomEvents: {
+    query():
+      generateTimeSeriesQuery(
+        'sum by (pod, namespace) (increase(container_oom_events_total{namespace=~"$namespace", container!=""}[$__rate_interval]))',
         '{{namespace}}/{{pod}}'
       ),
   },
@@ -155,36 +173,36 @@ local generateTableQuery(query) = [
       ),
   },
 
-  // Storage Metrics
-  podStorageReadBytes: {
+  // Storage Metrics (PVC-level)
+  podPvcUsed: {
     query():
       generateTimeSeriesQuery(
-        'sum by (pod, namespace) (rate(container_fs_reads_bytes_total{namespace=~"$namespace", container!=""}[$__rate_interval]))',
-        '{{namespace}}/{{pod}}'
+        'kubelet_volume_stats_used_bytes{namespace=~"$namespace"}',
+        '{{namespace}}/{{persistentvolumeclaim}}'
       ),
   },
 
-  podStorageWriteBytes: {
+  podPvcCapacity: {
     query():
       generateTimeSeriesQuery(
-        'sum by (pod, namespace) (rate(container_fs_writes_bytes_total{namespace=~"$namespace", container!=""}[$__rate_interval]))',
-        '{{namespace}}/{{pod}}'
+        'kubelet_volume_stats_capacity_bytes{namespace=~"$namespace"}',
+        '{{namespace}}/{{persistentvolumeclaim}}'
       ),
   },
 
-  podStorageReadOps: {
+  podPvcAvailable: {
     query():
       generateTimeSeriesQuery(
-        'sum by (pod, namespace) (rate(container_fs_reads_total{namespace=~"$namespace", container!=""}[$__rate_interval]))',
-        '{{namespace}}/{{pod}}'
+        'kubelet_volume_stats_available_bytes{namespace=~"$namespace"}',
+        '{{namespace}}/{{persistentvolumeclaim}}'
       ),
   },
 
-  podStorageWriteOps: {
+  podPvcInodes: {
     query():
       generateTimeSeriesQuery(
-        'sum by (pod, namespace) (rate(container_fs_writes_total{namespace=~"$namespace", container!=""}[$__rate_interval]))',
-        '{{namespace}}/{{pod}}'
+        'kubelet_volume_stats_inodes_used{namespace=~"$namespace"}',
+        '{{namespace}}/{{persistentvolumeclaim}}'
       ),
   },
 }

@@ -574,6 +574,7 @@ local queries = import 'queries.libsonnet';
     self.unrecoveredKubeVirts(),
     chaos_panels.consoleHealthCheck(43),
     chaos_panels.scenarioAlerts(),
+    chaos_panels.resiliencyScore(19),
     panels.etcd99thWalFsyncLatency(),
     panels.etcd99thRoundTripTime(),
     panels.ovnMasterCPU(),

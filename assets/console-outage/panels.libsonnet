@@ -282,6 +282,7 @@ local queries = import 'queries.libsonnet';
     self.consoleDownTime(),
     self.downtimeDurationByEvent(),
     chaos_panels.scenarioAlerts(),
+    chaos_panels.resiliencyScore(19),
     panels.etcd99thWalFsyncLatency(),
     panels.etcd99thRoundTripTime(),
     panels.ovnMasterCPU(),

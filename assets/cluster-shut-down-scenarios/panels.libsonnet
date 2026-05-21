@@ -120,6 +120,7 @@ local queries = import 'queries.libsonnet';
     chaos_panels.scenarioUuidDetails('Cluster Shut Down Scenario UUID Details', queries.clusterShutDownScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
+    chaos_panels.resiliencyScore(19),
     self.nodeRunningTime(),
     self.nodeStoppedTime(),
     chaos_panels.consoleHealthCheck(28),

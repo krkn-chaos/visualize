@@ -295,7 +295,7 @@ local generateTableQuery(query) = [
   vmiChaosReceiveDropped: {
     query():
       generateTimeSeriesQuery(
-        'rate(kubevirt_vmi_network_receive_packets_dropped_total{name=~"$vmi", namespace=~"$namespace"}[30s])',
+        'rate(kubevirt_vmi_network_receive_packets_dropped_total{name=~"$vmi", namespace=~"$namespace"}[1m])',
         'dropped rx - {{name}}/{{interface}}'
       ),
   },

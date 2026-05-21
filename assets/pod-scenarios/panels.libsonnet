@@ -785,6 +785,7 @@ local queries = import 'queries.libsonnet';
     self.podRecoveryTime(),
     chaos_panels.consoleHealthCheck(27),
     chaos_panels.scenarioAlerts(),
+    chaos_panels.resiliencyScore(19),
     panels.etcd99thWalFsyncLatency(),
     panels.etcd99thRoundTripTime(),
     panels.ovnMasterCPU(),

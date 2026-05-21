@@ -162,6 +162,88 @@ local commonOverrides = [
     type: 'timeseries',
   },
 
+  resiliencyScore(y=19):: {
+    datasource: { type: 'grafana-opensearch-datasource', uid: '${Datasource}' },
+    fieldConfig: {
+      defaults: {
+        color: { mode: 'continuous-RdYlGr' },
+        custom: {
+          axisCenteredZero: false,
+          axisColorMode: 'text',
+          axisLabel: '',
+          axisPlacement: 'auto',
+          barAlignment: 0,
+          drawStyle: 'line',
+          fillOpacity: 10,
+          gradientMode: 'scheme',
+          hideFrom: { legend: false, tooltip: false, viz: false },
+          lineInterpolation: 'linear',
+          lineWidth: 2,
+          pointSize: 8,
+          scaleDistribution: { type: 'linear' },
+          showPoints: 'always',
+          spanNulls: true,
+          stacking: { group: 'A', mode: 'none' },
+          thresholdsStyle: { mode: 'line+area' },
+        },
+        mappings: [],
+        max: 100,
+        min: 0,
+        thresholds: {
+          mode: 'absolute',
+          steps: [
+            { color: 'red', value: null },
+            { color: 'yellow', value: 50 },
+            { color: 'green', value: 80 },
+          ],
+        },
+        unit: 'none',
+      },
+      overrides: [],
+    },
+    gridPos: { h: 8, w: 24, x: 0, y: y },
+    id: 99,
+    options: {
+      legend: {
+        calcs: ['lastNotNull', 'max', 'min'],
+        displayMode: 'table',
+        placement: 'bottom',
+        showLegend: true,
+      },
+      tooltip: { mode: 'multi', sort: 'desc' },
+    },
+    pluginVersion: '10.4.0',
+    targets: [{
+      alias: '{{term run_uuid.keyword}}',
+      bucketAggs: [
+        {
+          field: 'run_uuid.keyword',
+          id: '2',
+          settings: { min_doc_count: '1', order: 'desc', orderBy: '_term', size: '10' },
+          type: 'terms',
+        },
+        {
+          field: 'timestamp',
+          id: '3',
+          settings: { interval: 'auto', min_doc_count: '1', timeZone: 'utc', trimEdges: '0' },
+          type: 'date_histogram',
+        },
+      ],
+      datasource: { type: 'grafana-opensearch-datasource', uid: '${Datasource}' },
+      metrics: [{
+        field: 'overall_resiliency_report.resiliency_score',
+        id: '1',
+        settings: {},
+        type: 'max',
+      }],
+      query: 'run_uuid.keyword: $run_uuid',
+      refId: 'A',
+      timeField: 'timestamp',
+    }],
+    title: 'Resiliency Score',
+    type: 'timeseries',
+  },
+
   scenarioAlerts():: {
     datasource: {
       type: 'grafana-opensearch-datasource',

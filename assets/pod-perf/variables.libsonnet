@@ -13,11 +13,11 @@ local var = g.dashboard.variable;
     + var.query.withDatasourceFromVariable(self.Datasource)
     + var.query.queryTypes.withLabelValues(
       'namespace',
-      'kube_pod_info',
+      'container_cpu_usage_seconds_total{namespace!=""}',
     )
     + var.query.withRefresh(1)
     + var.query.withRegex('')
-    + var.query.selectionOptions.withMulti(false)
+    + var.query.selectionOptions.withMulti(true)
     + var.query.selectionOptions.withIncludeAll(true)
     + { allValue: '.*' }
     + var.query.generalOptions.withLabel('Namespace'),

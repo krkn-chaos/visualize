@@ -69,9 +69,10 @@ g.dashboard.new('KubeVirt Performance')
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Transmit Packets', 'pps', queries.vmiNetworkTransmitPackets.query(), { x: 12, y: 13, w: 12, h: 8 }),
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Receive Errors', 'short', queries.vmiNetworkReceiveErrors.query(), { x: 0, y: 21, w: 12, h: 8 }),
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Transmit Errors', 'short', queries.vmiNetworkTransmitErrors.query(), { x: 12, y: 21, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Probe Pod Receive ($vmi)', 'Bps', queries.vmiChaosProbeReceive.query(), { x: 0, y: 29, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('All Probe Pods Receive (namespace)', 'Bps', queries.vmiChaosAllProbesReceive.query(), { x: 12, y: 29, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Receive + Transmit Overlay ($vmi, 1m)', 'Bps', queries.vmiChaosOverlayReceive.query() + queries.vmiChaosOverlayTransmit.query(), { x: 0, y: 37, w: 24, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('VMI Receive Packets Dropped ($vmi, 1m rate)', 'pps', queries.vmiChaosReceiveDropped.query(), { x: 0, y: 29, w: 24, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('Probe Pod Receive ($vmi)', 'Bps', queries.vmiChaosProbeReceive.query(), { x: 0, y: 37, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('All Probe Pods Receive (namespace)', 'Bps', queries.vmiChaosAllProbesReceive.query(), { x: 12, y: 37, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('Receive + Transmit Overlay ($vmi, 1m)', 'Bps', queries.vmiChaosOverlayReceive.query() + queries.vmiChaosOverlayTransmit.query(), { x: 0, y: 45, w: 24, h: 8 }),
   ]),
 
   g.panel.row.new('Storage Metrics')
