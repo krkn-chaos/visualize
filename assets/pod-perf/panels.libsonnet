@@ -71,6 +71,37 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
         'max',
         'min',
       ]),
+
+    genericTimeSeriesLegendNoCalcsPanel(title, unit, targets, gridPos):
+      self.base(title, unit, targets, gridPos)
+      + options.legend.withShowLegend(true)
+      + options.legend.withDisplayMode('list')
+      + options.legend.withPlacement('bottom')
+      + options.legend.withCalcs([]),
+
+    podStatusTimeline(title, targets, gridPos):
+      self.base(title, 'none', targets, gridPos)
+      + custom.withSpanNulls(false)
+      + custom.withFillOpacity(0)
+      + custom.withLineWidth(2)
+      + custom.withShowPoints('always')
+      + options.legend.withShowLegend(true)
+      + options.legend.withDisplayMode('list')
+      + options.legend.withPlacement('right')
+      + (local ts = g.panel.timeSeries; ts.standardOptions.withMin(-0.5))
+      + (local ts = g.panel.timeSeries; ts.standardOptions.withMax(4.5))
+      + (local ts = g.panel.timeSeries; ts.standardOptions.withMappings([
+           {
+             type: 'value',
+             options: {
+               '0': { text: 'Terminated', color: 'purple', index: 0 },
+               '1': { text: 'Completed', color: 'blue', index: 1 },
+               '2': { text: 'Error', color: 'red', index: 2 },
+               '3': { text: 'Pending', color: 'yellow', index: 3 },
+               '4': { text: 'Running', color: 'green', index: 4 },
+             },
+           },
+         ])),
   },
 
   table: {

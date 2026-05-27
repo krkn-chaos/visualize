@@ -24,18 +24,17 @@ g.dashboard.new('Pod Performance')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 0, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.stat.genericStatPanel('Pods by Phase', 'none', queries.podCountTotal.query(), { x: 0, y: 1, w: 24, h: 3 }),
-    panels.table.genericTablePanel('Pod Information', queries.podInfo.query(), { x: 0, y: 4, w: 24, h: 8 }),
+    panels.stat.genericStatPanel('Active Pods', 'none', queries.podCountTotal.query(), { x: 0, y: 1, w: 24, h: 3 }),
+    panels.table.genericTablePanel('Pod / Container Information', queries.podInfo.query(), { x: 0, y: 4, w: 24, h: 8 }),
   ]),
 
   g.panel.row.new('Pod Status')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 1, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('Pod Count by Phase', 'none', queries.podPhaseCount.query(), { x: 0, y: 2, w: 12, h: 6 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Pod Count by Namespace', 'none', queries.podCountByNamespace.query(), { x: 12, y: 2, w: 12, h: 6 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Ready Pods by Namespace', 'none', queries.podReadyCount.query(), { x: 0, y: 8, w: 12, h: 6 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Container Restarts', 'short', queries.podRestarts.query(), { x: 12, y: 8, w: 12, h: 6 }),
+    panels.timeSeries.podStatusTimeline('Pod Status Over Time', queries.podStatusOverTime.query(), { x: 0, y: 2, w: 24, h: 16 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('Container Restarts (start time changes)', 'short', queries.podRestarts.query(), { x: 0, y: 18, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('OOM Kill Events', 'short', queries.podOomEvents.query(), { x: 12, y: 18, w: 12, h: 8 }),
   ]),
 
   g.panel.row.new('CPU Metrics')
@@ -67,13 +66,13 @@ g.dashboard.new('Pod Performance')
     panels.timeSeries.genericTimeSeriesLegendPanel('Network Transmit Errors', 'short', queries.podNetworkTransmitErrors.query(), { x: 12, y: 21, w: 12, h: 8 }),
   ]),
 
-  g.panel.row.new('Storage Metrics')
+  g.panel.row.new('Storage Metrics (PVC)')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 5, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.genericTimeSeriesLegendPanel('Storage Read Throughput', 'Bps', queries.podStorageReadBytes.query(), { x: 0, y: 6, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Storage Write Throughput', 'Bps', queries.podStorageWriteBytes.query(), { x: 12, y: 6, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Storage Read IOPS', 'iops', queries.podStorageReadOps.query(), { x: 0, y: 14, w: 12, h: 8 }),
-    panels.timeSeries.genericTimeSeriesLegendPanel('Storage Write IOPS', 'iops', queries.podStorageWriteOps.query(), { x: 12, y: 14, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('PVC Used Bytes', 'bytes', queries.podPvcUsed.query(), { x: 0, y: 6, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('PVC Capacity Bytes', 'bytes', queries.podPvcCapacity.query(), { x: 12, y: 6, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('PVC Available Bytes', 'bytes', queries.podPvcAvailable.query(), { x: 0, y: 14, w: 12, h: 8 }),
+    panels.timeSeries.genericTimeSeriesLegendPanel('PVC Inodes Used', 'short', queries.podPvcInodes.query(), { x: 12, y: 14, w: 12, h: 8 }),
   ]),
 ])

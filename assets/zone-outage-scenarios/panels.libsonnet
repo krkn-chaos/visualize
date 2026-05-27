@@ -64,6 +64,7 @@ local timeseriesPanel(id, title, description, query, unit='s', gridX=0, gridY=21
     chaos_panels.scenarioUuidDetails('Zone Outage Scenario UUID Details', queries.zoneOutageScenarioUuidDetails),
     chaos_panels.alertsRow(),
     chaos_panels.scenarioAlerts(),
+    chaos_panels.resiliencyScore(19),
     chaos_panels.consoleHealthCheck(29),
     chaos_panels.telemetryRow(48, 23),
     metrics_panels.etcd99thWalFsyncLatency(),
