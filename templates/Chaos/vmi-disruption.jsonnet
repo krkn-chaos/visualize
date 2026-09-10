@@ -1,10 +1,10 @@
-local panels = import '../../assets/kubevirt-disruption/panels.libsonnet';
-local queries = import '../../assets/kubevirt-disruption/queries.libsonnet';
-local variables = import '../../assets/kubevirt-disruption/variables.libsonnet';
+local panels = import '../../assets/vmi-disruption/panels.libsonnet';
+local queries = import '../../assets/vmi-disruption/queries.libsonnet';
+local variables = import '../../assets/vmi-disruption/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
-  description: 'Kubevirt Disruption - Chaos Engineering (kubevirt_vm_outage)',
+  description: 'VMI Disruption - Chaos Engineering (vmi_outage)',
   editable: false,
   fiscalYearStartMonth: 0,
   graphTooltip: 1,
@@ -55,7 +55,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     ],
   },
   timezone: 'utc',
-  title: 'Kubevirt Disruption - Chaos Engineering (kubevirt_vm_outage)',
+  title: 'VMI Disruption - Chaos Engineering (vmi_outage)',
   uid: null,
   version: 1,
   weekStart: '',
