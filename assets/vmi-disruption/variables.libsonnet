@@ -50,8 +50,8 @@
   },
 
   getAllVariables()::
-    // Note: kubevirt uses scenarios.scenario_type (no .keyword) in ES
-    local scenario_type = 'kubevirt_vm_outage';
+    // Note: vmi uses scenarios.scenario_type (no .keyword) in ES
+    local scenario_type = 'vmi_outage';
     local scenarioFilter = 'scenarios.scenario_type: ' + scenario_type;
 
     local runUuidFilters = [
