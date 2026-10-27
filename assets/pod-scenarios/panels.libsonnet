@@ -277,17 +277,6 @@ local queries = import 'queries.libsonnet';
         alias: '',
         bucketAggs: [
           {
-            field: 'cluster_version.keyword',
-            id: '6',
-            settings: {
-              min_doc_count: '1',
-              order: 'desc',
-              orderBy: '_term',
-               size: '10',
-            },
-            type: 'terms',
-          },
-          {
             field: 'run_uuid.keyword',
             id: '7',
             settings: {
@@ -451,17 +440,6 @@ local queries = import 'queries.libsonnet';
       {
         alias: '',
         bucketAggs: [
-          {
-            field: 'cluster_version.keyword',
-            id: '6',
-            settings: {
-              min_doc_count: '1',
-              order: 'desc',
-              orderBy: '_term',
-               size: '10',
-            },
-            type: 'terms',
-          },
           {
             field: 'run_uuid.keyword',
             id: '7',

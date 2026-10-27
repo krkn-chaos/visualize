@@ -15,10 +15,6 @@ g.dashboard.new('GPU Cluster Overview')
 + g.dashboard.graphTooltip.withSharedCrosshair()
 + g.dashboard.withVariables([
   variables.Datasource,
-  variables.region,
-  variables.zone,
-  variables.gpu_node_pool,
-  variables.instance_type,
   variables.gpu_node,
   variables.gpu,
 ])
