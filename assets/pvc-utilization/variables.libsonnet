@@ -30,7 +30,7 @@ local labelValues(metric, label) =
   namespace:
     var.query.new('namespace')
     + var.query.withDatasourceFromVariable(datasource)
-    + labelValues('kube_pod_info', 'namespace')
+    + labelValues('kube_persistentvolumeclaim_resource_requests_storage_bytes', 'namespace')
     + var.query.withRefresh(2)
     + var.query.selectionOptions.withMulti(true)
     + var.query.selectionOptions.withIncludeAll(true)
