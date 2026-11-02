@@ -57,7 +57,7 @@
       'cloud_type.keyword: $cloud_type',
       'network_plugins.keyword: $networkType',
       'scenarios.scenario_type.keyword: ' + scenario_type,
-      'major_version.keyword: $major_version',
+      'major_version.keyword: ${major_version:lucene}',
       'node_summary_infos.count: $node_count',
       'tag.keyword: $tag',
       'fips_enabled: $fips_enabled',

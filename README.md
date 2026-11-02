@@ -35,6 +35,8 @@ On OpenShift Cluster
 - `b`: The (b)earer token to use for the Prometheus datasource (if openshift will auto create a new token, don't need for prometheus in kubernetes )
 - `-h`: Show help message and exit.
 
+On OpenShift, provisioning also adds a non-default `User Workload Prometheus` datasource at `https://prometheus-user-workload.openshift-user-workload-monitoring.svc:9091`. Prometheus dashboard datasource variables can select either this datasource or `Cluster Prometheus`. User workload monitoring must be enabled, and the Grafana service account token must be allowed to query user workload metrics.
+
 **Example Usage:**
 ```sh
 ./deploy.sh                       # Deploy Grafana in 'krkn-visualize' namespace with default password

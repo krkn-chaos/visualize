@@ -58,7 +58,7 @@
       'cloud_type.keyword: $cloud_type',
       'network_plugins.keyword: $networkType',
       scenarioFilter,
-      'major_version.keyword: $major_version',
+      'major_version.keyword: ${major_version:lucene}',
       'node_summary_infos.count: $node_count',
       'scenarios.parameters.scenarios.namespace.keyword: $namespace',
       'tag.keyword: $tag',
