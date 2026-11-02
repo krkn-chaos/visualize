@@ -108,6 +108,8 @@ You'll need to create 3 data sources connecting to krkn-telemetry, krkn-metrics 
 3. Create jsonnet file under General or if its specific to kubernetes, k8s
 4. Run `make`
 
+The **PVC Utilization** dashboard is available under General. Its PVC panels use Prometheus kubelet volume statistics (`kubelet_volume_stats_used_bytes`, `kubelet_volume_stats_capacity_bytes`, and `kubelet_volume_stats_available_bytes`) for live usage; namespace and PVC filters, claim counts, and requested capacity use kube-state-metrics. Raw block PVCs attached to a VMI are not visible to kubelet as filesystems, so their guest-side usage appears in a separate VMI section when KubeVirt guest filesystem metrics are exposed. That section requires a working guest agent and uses the VMI and guest mount point filters; it reports guest filesystem usage and does not automatically associate a mount point with a PVC. Choose a Prometheus datasource and Grafana refreshes the dashboard every 30 seconds by default.
+
 ## Running via Docker (Dockerfile.deploy)
 
 `Dockerfile.deploy` packages `deploy.sh` into a container image, letting you deploy Grafana without installing any local dependencies. All `deploy.sh` CLI options are exposed as environment variables.
