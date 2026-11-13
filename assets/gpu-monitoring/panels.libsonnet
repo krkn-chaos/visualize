@@ -1,125 +1,92 @@
 // GPU Monitoring Grafana Panels
+//
+// All panels are driven by query objects from queries.libsonnet, i.e.
+// objects exposing `query()` and `legendFormat`. A panel accepts either a
+// single query object or a list of them (multiple targets on one panel).
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 {
   timeSeries: {
-    gpuMemoryTimeSeries(title, query, gridPos)::
-      g.panel.timeSeries.new(title)
-      + g.panel.timeSeries.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query)
-        + g.query.prometheus.withLegendFormat('GPU {{ gpu_index }}'),
-      ])
-      + g.panel.timeSeries.options.withShowLegend(true)
-      + g.panel.timeSeries.options.legend.withDisplayMode('table')
-      + g.panel.timeSeries.options.legend.withPlacement('right')
-      + g.panel.timeSeries.fieldConfig.defaults.custom.hideFrom.withLegend(false)
-      + g.panel.timeSeries.fieldConfig.defaults.unit.short()
-      + g.panel.withGridPos(gridPos),
+    local timeSeries = g.panel.timeSeries,
+    local options = timeSeries.options,
 
-    gpuUtilizationTimeSeries(title, query, gridPos)::
-      g.panel.timeSeries.new(title)
-      + g.panel.timeSeries.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query)
-        + g.query.prometheus.withLegendFormat('GPU {{ gpu_index }}'),
-      ])
-      + g.panel.timeSeries.options.withShowLegend(true)
-      + g.panel.timeSeries.fieldConfig.defaults.unit.percent()
-      + g.panel.timeSeries.fieldConfig.defaults.min(0)
-      + g.panel.timeSeries.fieldConfig.defaults.max(100)
-      + g.panel.timeSeries.fieldConfig.defaults.thresholds.mode.absolute()
-      + g.panel.timeSeries.fieldConfig.defaults.thresholds.steps([
-        { color: 'green', value: null },
-        { color: 'yellow', value: 50 },
-        { color: 'red', value: 85 },
-      ])
-      + g.panel.withGridPos(gridPos),
+    // Normalize a query argument into a list of query objects
+    local asList(query) = if std.type(query) == 'array' then query else [query],
 
-    gpuTemperatureTimeSeries(title, query, gridPos)::
-      g.panel.timeSeries.new(title)
-      + g.panel.timeSeries.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query)
-        + g.query.prometheus.withLegendFormat('GPU {{ gpu_index }}'),
-      ])
-      + g.panel.timeSeries.fieldConfig.defaults.unit.celsius()
-      + g.panel.timeSeries.fieldConfig.defaults.thresholds.steps([
-        { color: 'blue', value: null },
-        { color: 'green', value: 30 },
-        { color: 'yellow', value: 60 },
-        { color: 'orange', value: 80 },
-        { color: 'red', value: 90 },
-      ])
-      + g.panel.withGridPos(gridPos),
+    // Build a prometheus target from a query object
+    local target(q) =
+      g.query.prometheus.new('$datasource', q.query())
+      + g.query.prometheus.withLegendFormat(q.legendFormat),
+
+    // Generic GPU time series panel.
+    //   title:   panel title
+    //   query:   query object or list of query objects
+    //   gridPos: {x, y, w, h}
+    //   unit:    Grafana unit id (defaults to 'short')
+    gpuTimeSeries(title, query, gridPos, unit='short')::
+      timeSeries.new(title)
+      + timeSeries.datasource.withType('prometheus')
+      + timeSeries.datasource.withUid('$datasource')
+      + timeSeries.standardOptions.withUnit(unit)
+      + timeSeries.queryOptions.withTargets([target(q) for q in asList(query)])
+      + timeSeries.gridPos.withX(gridPos.x)
+      + timeSeries.gridPos.withY(gridPos.y)
+      + timeSeries.gridPos.withH(gridPos.h)
+      + timeSeries.gridPos.withW(gridPos.w)
+      + options.legend.withDisplayMode('table')
+      + options.legend.withPlacement('right'),
   },
 
   stat: {
-    gpuCountStatPanel(title, query, gridPos)::
-      g.panel.stat.new(title)
-      + g.panel.stat.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query),
-      ])
-      + g.panel.stat.options.withColorMode('background')
-      + g.panel.stat.options.withGraphMode('none')
-      + g.panel.stat.fieldConfig.defaults.unit.short()
-      + g.panel.withGridPos(gridPos),
+    local stat = g.panel.stat,
+    local options = stat.options,
 
-    gpuUtilizationStat(title, query, gridPos)::
-      g.panel.stat.new(title)
-      + g.panel.stat.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query),
-      ])
-      + g.panel.stat.fieldConfig.defaults.unit.percent()
-      + g.panel.stat.fieldConfig.defaults.min(0)
-      + g.panel.stat.fieldConfig.defaults.max(100)
-      + g.panel.stat.fieldConfig.defaults.thresholds.steps([
-        { color: 'green', value: null },
-        { color: 'yellow', value: 50 },
-        { color: 'red', value: 85 },
-      ])
-      + g.panel.withGridPos(gridPos),
+    // Normalize a query argument into a list of query objects
+    local asList(query) = if std.type(query) == 'array' then query else [query],
 
-    gpuTemperatureStat(title, query, gridPos)::
-      g.panel.stat.new(title)
-      + g.panel.stat.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query),
+    // Generic GPU stat panel.
+    //   query:   query object or list of query objects
+    //   unit:    Grafana unit id (defaults to 'short')
+    gpuStatPanel(title, query, gridPos, unit='short')::
+      stat.new(title)
+      + stat.datasource.withType('prometheus')
+      + stat.datasource.withUid('$datasource')
+      + stat.standardOptions.withUnit(unit)
+      + stat.queryOptions.withTargets([
+        g.query.prometheus.new('$datasource', q.query())
+        + g.query.prometheus.withInstant(true)
+        + g.query.prometheus.withLegendFormat(q.legendFormat)
+        for q in asList(query)
       ])
-      + g.panel.stat.fieldConfig.defaults.unit.celsius()
-      + g.panel.stat.fieldConfig.defaults.thresholds.steps([
-        { color: 'blue', value: null },
-        { color: 'green', value: 30 },
-        { color: 'yellow', value: 60 },
-        { color: 'orange', value: 80 },
-        { color: 'red', value: 90 },
-      ])
-      + g.panel.withGridPos(gridPos),
+      + stat.gridPos.withX(gridPos.x)
+      + stat.gridPos.withY(gridPos.y)
+      + stat.gridPos.withH(gridPos.h)
+      + stat.gridPos.withW(gridPos.w)
+      + options.withGraphMode('none')
+      + options.withColorMode('value'),
   },
 
   table: {
-    gpuAllocationTable(title, query, gridPos)::
-      g.panel.table.new(title)
-      + g.panel.table.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query),
-      ])
-      + g.panel.table.options.withShowHeader(true)
-      + g.panel.table.options.withSortBy([{ name: 'pod', desc: false }])
-      + g.panel.withGridPos(gridPos),
-  },
+    local table = g.panel.table,
 
-  gauge: {
-    gpuMemoryGauge(title, query, gridPos)::
-      g.panel.gauge.new(title)
-      + g.panel.gauge.queryOptions.withTargets([
-        g.query.prometheus.new('$datasource', query),
+    // Normalize a query argument into a list of query objects
+    local asList(query) = if std.type(query) == 'array' then query else [query],
+
+    // Generic GPU table panel.
+    gpuTablePanel(title, query, gridPos)::
+      table.new(title)
+      + table.datasource.withType('prometheus')
+      + table.datasource.withUid('$datasource')
+      + table.queryOptions.withTargets([
+        g.query.prometheus.new('$datasource', q.query())
+        + g.query.prometheus.withFormat('table')
+        + g.query.prometheus.withInstant(true)
+        + g.query.prometheus.withLegendFormat(q.legendFormat)
+        for q in asList(query)
       ])
-      + g.panel.gauge.options.withShowThresholdLabels(false)
-      + g.panel.gauge.options.withShowThresholdMarkers(true)
-      + g.panel.gauge.fieldConfig.defaults.unit.percent()
-      + g.panel.gauge.fieldConfig.defaults.min(0)
-      + g.panel.gauge.fieldConfig.defaults.max(100)
-      + g.panel.gauge.fieldConfig.defaults.thresholds.steps([
-        { color: 'green', value: null },
-        { color: 'yellow', value: 70 },
-        { color: 'red', value: 90 },
-      ])
-      + g.panel.withGridPos(gridPos),
+      + table.gridPos.withX(gridPos.x)
+      + table.gridPos.withY(gridPos.y)
+      + table.gridPos.withH(gridPos.h)
+      + table.gridPos.withW(gridPos.w),
   },
 }

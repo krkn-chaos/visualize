@@ -4,8 +4,9 @@ local variables = import '../../assets/gpu-monitoring/variables.libsonnet';
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 g.dashboard.new('GPU Monitoring')
-+ g.dashboard.withDescription('NVIDIA GPU monitoring and usage metrics from Mokka simulation')
-+ g.dashboard.withTags(['krkn', 'gpu', 'monitoring', 'mokka', 'nvidia'])
++ g.dashboard.withUid('gpu-monitoring')
++ g.dashboard.withDescription('NVIDIA GPU monitoring and usage metrics from Mokka simulation (dcgm-exporter DCGM_FI_* metrics)')
++ g.dashboard.withTags(['krkn', 'gpu', 'monitoring', 'mokka', 'nvidia', 'dcgm'])
 + g.dashboard.time.withFrom('now-1h')
 + g.dashboard.time.withTo('now')
 + g.dashboard.withTimezone('utc')
@@ -16,138 +17,59 @@ g.dashboard.new('GPU Monitoring')
 + g.dashboard.graphTooltip.withSharedCrosshair()
 + g.dashboard.withVariables([
   variables.Datasource,
+  variables.node,
   variables.namespace,
   variables.pod,
-  variables.gpu_index,
 ])
 
 + g.dashboard.withPanels([
-  // GPU Overview Row
   g.panel.row.new('GPU Overview')
-  + g.panel.row.withCollapsed(false)
+  + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 0, w: 24, h: 1 })
-  + g.panel.row.withPanels([]),
+  + g.panel.row.withPanels([
+    panels.stat.gpuStatPanel('Total GPUs Detected', queries.gpuCountDetected, { x: 0, y: 1, w: 5, h: 3 }),
+    panels.stat.gpuStatPanel('GPUs Allocated to Pods', queries.gpuCountAllocated, { x: 5, y: 1, w: 5, h: 3 }),
+    panels.stat.gpuStatPanel('Idle GPUs (<10% util)', queries.gpuIdleTime, { x: 10, y: 1, w: 5, h: 3 }),
+    panels.stat.gpuStatPanel('Average GPU Utilization', queries.gpuUtilizationAverage, { x: 15, y: 1, w: 5, h: 3 }, unit='percent'),
+    panels.stat.gpuStatPanel('Max GPU Temperature', queries.gpuTemperatureMax, { x: 20, y: 1, w: 4, h: 3 }, unit='celsius'),
+  ]),
 
-  // GPU Status Cards
-  panels.stat.gpuCountStatPanel(
-    'Total GPUs Allocated',
-    queries.gpuCountAllocated.query(),
-    { x: 0, y: 1, w: 4, h: 3 }
-  ),
-
-  panels.stat.gpuUtilizationStat(
-    'Average GPU Utilization',
-    queries.gpuUtilizationAverage.query(),
-    { x: 4, y: 1, w: 4, h: 3 }
-  ),
-
-  panels.stat.gpuTemperatureStat(
-    'Max GPU Temperature',
-    queries.gpuTemperatureMax.query(),
-    { x: 8, y: 1, w: 4, h: 3 }
-  ),
-
-  panels.stat.gpuCountStatPanel(
-    'Idle GPUs',
-    queries.gpuIdleTime.query(),
-    { x: 12, y: 1, w: 4, h: 3 }
-  ),
-
-  // GPU Memory Row
   g.panel.row.new('GPU Memory')
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 1, w: 24, h: 1 })
+  + g.panel.row.withPanels([
+    panels.timeSeries.gpuTimeSeries('GPU Memory Usage Over Time', queries.gpuMemoryUsed, { x: 0, y: 2, w: 12, h: 8 }, unit='mbytes'),
+    panels.timeSeries.gpuTimeSeries('GPU Memory Utilization %', queries.gpuMemoryUtilizationPercent, { x: 12, y: 2, w: 12, h: 8 }, unit='percent'),
+    panels.timeSeries.gpuTimeSeries('GPU Memory Free', queries.gpuMemoryFree, { x: 0, y: 10, w: 12, h: 8 }, unit='mbytes'),
+    panels.timeSeries.gpuTimeSeries('GPU Memory Change Rate (MiB/s)', queries.gpuMemoryTrend, { x: 12, y: 10, w: 12, h: 8 }),
+  ]),
+
+  g.panel.row.new('GPU Utilization & Performance')
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 2, w: 24, h: 1 })
+  + g.panel.row.withPanels([
+    panels.timeSeries.gpuTimeSeries('GPU Compute Utilization %', queries.gpuUtilization, { x: 0, y: 3, w: 12, h: 8 }, unit='percent'),
+    panels.timeSeries.gpuTimeSeries('GPU Temperature', queries.gpuTemperature, { x: 12, y: 3, w: 12, h: 8 }, unit='celsius'),
+    panels.timeSeries.gpuTimeSeries('GPU Power Draw', queries.gpuPowerUsage, { x: 0, y: 11, w: 12, h: 8 }, unit='watt'),
+    panels.timeSeries.gpuTimeSeries('GPU Clocks', [queries.gpuSmClock, queries.gpuMemClock], { x: 12, y: 11, w: 12, h: 8 }, unit='MHz'),
+    panels.timeSeries.gpuTimeSeries('PCIe Throughput', [queries.gpuPcieRx, queries.gpuPcieTx], { x: 0, y: 19, w: 12, h: 8 }, unit='Bps'),
+    panels.timeSeries.gpuTimeSeries('Tensor Pipe Activity %', queries.gpuTensorActive, { x: 12, y: 19, w: 12, h: 8 }, unit='percent'),
+  ]),
+
+  g.panel.row.new('Pod GPU Allocation')
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withGridPos({ x: 0, y: 3, w: 24, h: 1 })
+  + g.panel.row.withPanels([
+    panels.table.gpuTablePanel('Pod GPU Allocation', queries.gpuCountByPod, { x: 0, y: 4, w: 24, h: 8 }),
+    panels.timeSeries.gpuTimeSeries('GPU Memory Usage by Pod', queries.gpuMemoryByPod, { x: 0, y: 12, w: 12, h: 8 }, unit='mbytes'),
+    panels.timeSeries.gpuTimeSeries('GPU Utilization by Pod', queries.gpuUtilizationByPod, { x: 12, y: 12, w: 12, h: 8 }, unit='percent'),
+  ]),
+
+  g.panel.row.new('GPU Health & Errors')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withGridPos({ x: 0, y: 4, w: 24, h: 1 })
   + g.panel.row.withPanels([
-    panels.timeSeries.gpuMemoryTimeSeries(
-      'GPU Memory Usage Over Time',
-      queries.gpuMemoryUsed.query(),
-      { x: 0, y: 5, w: 12, h: 8 }
-    ),
-
-    panels.timeSeries.gpuMemoryTimeSeries(
-      'GPU Memory Utilization %',
-      queries.gpuMemoryUtilizationPercent.query(),
-      { x: 12, y: 5, w: 12, h: 8 }
-    ),
-
-    panels.timeSeries.gpuMemoryTimeSeries(
-      'GPU Memory Free',
-      queries.gpuMemoryFree.query(),
-      { x: 0, y: 13, w: 12, h: 8 }
-    ),
-
-    panels.timeSeries.gpuMemoryTimeSeries(
-      'GPU Memory Change Rate (MB/s)',
-      queries.gpuMemoryTrend.query(),
-      { x: 12, y: 13, w: 12, h: 8 }
-    ),
-  ]),
-
-  // GPU Utilization Row
-  g.panel.row.new('GPU Utilization & Performance')
-  + g.panel.row.withCollapsed(true)
-  + g.panel.row.withGridPos({ x: 0, y: 5, w: 24, h: 1 })
-  + g.panel.row.withPanels([
-    panels.timeSeries.gpuUtilizationTimeSeries(
-      'GPU Compute Utilization %',
-      queries.gpuUtilization.query(),
-      { x: 0, y: 6, w: 12, h: 8 }
-    ),
-
-    panels.gauge.gpuMemoryGauge(
-      'Current Memory Usage by GPU',
-      queries.gpuMemoryUtilizationPercent.query(),
-      { x: 12, y: 6, w: 12, h: 8 }
-    ),
-
-    panels.timeSeries.gpuTemperatureTimeSeries(
-      'GPU Temperature',
-      queries.gpuTemperature.query(),
-      { x: 0, y: 14, w: 12, h: 8 }
-    ),
-
-    panels.timeSeries.gpuMemoryTimeSeries(
-      'GPU Power Draw',
-      queries.gpuPowerUsage.query(),
-      { x: 12, y: 14, w: 12, h: 8 }
-    ),
-  ]),
-
-  // Pod Allocation Row
-  g.panel.row.new('Pod GPU Allocation')
-  + g.panel.row.withCollapsed(true)
-  + g.panel.row.withGridPos({ x: 0, y: 6, w: 24, h: 1 })
-  + g.panel.row.withPanels([
-    panels.table.gpuAllocationTable(
-      'Pod GPU Allocation',
-      queries.gpuCountByPod.query(),
-      { x: 0, y: 7, w: 24, h: 10 }
-    ),
-
-    panels.timeSeries.gpuMemoryTimeSeries(
-      'Memory Usage by Pod',
-      queries.gpuMemoryByPod.query(),
-      { x: 0, y: 17, w: 24, h: 8 }
-    ),
-  ]),
-
-  // Alerts & Warnings Row
-  g.panel.row.new('Alerts & Warnings')
-  + g.panel.row.withCollapsed(true)
-  + g.panel.row.withGridPos({ x: 0, y: 7, w: 24, h: 1 })
-  + g.panel.row.withPanels([
-    g.panel.table.new('High Memory Usage Alerts')
-    + g.panel.table.queryOptions.withTargets([
-      g.query.prometheus.new('$datasource', queries.gpuMemoryPressure.query()),
-    ])
-    + g.panel.table.options.withShowHeader(true)
-    + g.panel.withGridPos({ x: 0, y: 8, w: 12, h: 6 }),
-
-    g.panel.table.new('GPU Errors')
-    + g.panel.table.queryOptions.withTargets([
-      g.query.prometheus.new('$datasource', queries.gpuErrors.query()),
-    ])
-    + g.panel.table.options.withShowHeader(true)
-    + g.panel.withGridPos({ x: 12, y: 8, w: 12, h: 6 }),
+    panels.timeSeries.gpuTimeSeries('Memory Pressure (>85% FB Used)', queries.gpuMemoryPressure, { x: 0, y: 5, w: 12, h: 8 }, unit='percentunit'),
+    panels.timeSeries.gpuTimeSeries('Remapped Rows (ECC Errors)', [queries.gpuErrors, queries.gpuCorrectableErrors], { x: 12, y: 5, w: 12, h: 8 }),
   ]),
 ])
